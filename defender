@@ -1,0 +1,23 @@
+public class defender{
+  private int range,x,y;
+  Bullet shot;
+  
+  public void setRange(int n){
+    range=n;
+  }
+  public void setX(int n){
+    x=n;
+  }
+  public void setY(int n){
+    y=n;
+  }
+  public int getRange(){
+    return range;
+  }
+  public int getX(){
+    return x;
+  }
+  public int getY(){
+    return y;
+  }
+}
