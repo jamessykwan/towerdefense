@@ -78,14 +78,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	public Driver() {
 		JFrame f = new JFrame();
-		f.setTitle("Frogger");
+		f.setTitle("tower defense");
 		f.setSize(screen_width, screen_height);
 		f.setResizable(false);
 		f.addKeyListener(this);
 		f.addMouseMotionListener(this);
 		
 		//sprite instantiation
-		player = new Sprite("frog.png");
+		player = new Sprite("weirdPixelMonkey.png");
 		player.addMouseListener(this);
 		
 		//particles
