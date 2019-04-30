@@ -26,6 +26,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	int screen_height = 900;
 	Sprite player;
 	Balloon b;
+
 	Background bg;
 	int my_variable = 0; //example
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -64,7 +65,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	public void update() {
 	
-	  player.move();
+	  player.move(1,1);
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	public Driver() {
 		JFrame f = new JFrame();
 		f.setTitle("Frogger");
+
 		f.setSize(screen_width, screen_height);
 		f.setResizable(false);
 		f.addKeyListener(this);
@@ -108,22 +110,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		//System.out.println("key press "+e.getKeyCode());
+
+		System.out.println("key press "+e.getKeyCode());
 		if(e.getKeyCode()==38){
 			//up
-			b.vy=-10;
-		}
-		if(e.getKeyCode()==37){
-			//up
-			b.vx=-10;
-		}
-		if(e.getKeyCode()==39){
-			//up
-			b.vx=10;
-		}
-		if(e.getKeyCode()==40){
-			//up
-			b.vy=10;
+			player.vy=-1;
 		}
 	}
 	
