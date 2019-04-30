@@ -25,6 +25,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	int screen_width = 900;
 	int screen_height = 900;
 	Sprite player;
+	Balloon b;
 	Background bg;
 	int my_variable = 0; //example
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
@@ -46,7 +47,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	
 		//paint sprite
 		player.paint(g);
-		
+		b.paint(g);
 	
 		
 		g.setColor(Color.BLACK);
@@ -85,6 +86,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		f.addMouseMotionListener(this);
 		
 		//sprite instantiation
+		b = new Balloon(1);
+		b.addMouseListener(this);
 		player = new Sprite("frog.png");
 		player.addMouseListener(this);
 		
@@ -105,10 +108,22 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("key press "+e.getKeyCode());
+		//System.out.println("key press "+e.getKeyCode());
 		if(e.getKeyCode()==38){
 			//up
-			player.vy=-1;
+			b.vy=-10;
+		}
+		if(e.getKeyCode()==37){
+			//up
+			b.vx=-10;
+		}
+		if(e.getKeyCode()==39){
+			//up
+			b.vx=10;
+		}
+		if(e.getKeyCode()==40){
+			//up
+			b.vy=10;
 		}
 	}
 	

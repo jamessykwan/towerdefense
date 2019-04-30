@@ -24,7 +24,7 @@ public class Sprite extends JButton{
 	int tempy;
 	int tempx;
 	
-	int vx = 2, vy = -10, ay = 1;
+	int vx = 0, vy = 0, ay = 1;
 	
 	AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
@@ -51,8 +51,13 @@ public class Sprite extends JButton{
 
 
 	// move with input from driver
-	public void move() {
-	//	tx.translate(vx, vy);
+	public void move(int vx, int vy) {
+		//tx.translate(vx, vy);
+		x+= vx;
+		y+= vy;
+		this.setBounds(x,y,100,100);
+
+		System.out.println(vx + " " + vy);
 	}
 
 	// use find affinetransform current position
