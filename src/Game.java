@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class Game implements Runnable {
 
-    Sprite player;
     Background bg;
-    GamePanel gamePanel;
-    ArrayList<Sprite> towers = new ArrayList<Sprite>();
+    ArrayList<DartTower> towers = new ArrayList<>();
     ArrayList<Sprite> balloons = new ArrayList<Sprite>();
-    Point mouseCoordinate;
-    GameState gameState;
-    JFrame frame;
+    private Sprite player;
+    private GamePanel gamePanel;
+    private Point mouseCoordinate;
+    private GameState gameState;
+    private JFrame frame;
 
 
     public Game() {
@@ -24,15 +24,19 @@ public class Game implements Runnable {
     }
 
     public void init() {
+        DartTower tower = new DartTower();
+        //towers.add(tower);
         gamePanel = new GamePanel(this);
+        gamePanel.setPreferredSize((gamePanel.getPreferredSize()));
         frame = new JFrame();
         frame.setTitle("tower defense");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setContentPane(gamePanel);
         frame.pack();
         frame.setVisible(true);
-        gameState = GameState.UPDATE;
+        gameState = GameState.DRAW;
+
     }
 
     public void update() {
@@ -44,7 +48,11 @@ public class Game implements Runnable {
 
     }
 
-    public void draw(Graphics g) {
+    void draw(Graphics g) {
+
+        for (DartTower tower : towers) {
+            tower.draw(g);
+        }
 
     }
 
@@ -52,10 +60,13 @@ public class Game implements Runnable {
         while (true) {
             {
                 if (gameState == GameState.SETUP) {
+                    System.out.println("setup");
                     init();
                 } else if (gameState == GameState.UPDATE) {
+                    System.out.println("updating");
                     update();
                 } else if (gameState == GameState.DRAW) {
+                    System.out.println("drawing");
                     gamePanel.repaint();
                 } else {
                     break;
