@@ -22,9 +22,8 @@ import java.awt.geom.AffineTransform;
 public class Driver extends JPanel implements ActionListener, KeyListener,
 		MouseListener, MouseMotionListener {
 
-	int screen_width = 900;
-	int screen_height = 900;
-	Sprite player;
+	int screen_width = 1500;
+	int screen_height = 1000;
 	Balloon b;
 
 	Background bg;
@@ -35,9 +34,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	//fonts
 	Font font = new Font("Courier New", 1, 50);
 	Font font2 = new Font("Courier New", 1, 30);
+	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
-		//bg.paint(g);
+		bg.paint(g);
 		
 		g.setFont(font);
 		
@@ -47,7 +47,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		g.setColor(Color.CYAN);
 	
 		//paint sprite
-		player.paint(g);
 		b.paint(g);
 	
 		
@@ -64,8 +63,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 
 	public void update() {
-	
-	  player.move(1,1);
+		b.move();
+		
+		//System.out.println("move");
 	}
 
 	@Override
@@ -86,12 +86,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		f.setResizable(false);
 		f.addKeyListener(this);
 		f.addMouseMotionListener(this);
+		f.addMouseListener(this);
+		
+		bg = new Background("hqdefault.jpg");
 		
 		//sprite instantiation
-		b = new Balloon(1);
+		b = new Balloon(3);
 		b.addMouseListener(this);
-		player = new Sprite("frog.png");
-		player.addMouseListener(this);
 		
 		//particles
 		particles.add(new Particle(50,50));
@@ -114,7 +115,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		System.out.println("key press "+e.getKeyCode());
 		if(e.getKeyCode()==38){
 			//up
-			player.vy=-1;
+			//b.moveTo(0,0);
+			b.takeDamage(1);
+
 		}
 	}
 	
@@ -127,18 +130,25 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+		
+		//System.out.println("key press "+e.getKeyCode());
+		if(e.getKeyCode()==38){
+			//up
+			b.deletePath();
+		}
 
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-			
+		System.out.println(e.getX() + " "+ e.getY());
 		pressed = true;
 		if(e.getComponent().getClass()==Sprite.class){
 			System.out.println("clicked on a sprite");
 		}
 	
 	}
+	
 	boolean pressed = false;
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -156,7 +166,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+		System.out.println("WAY");
 	}
 
 	@Override
