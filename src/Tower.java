@@ -52,13 +52,15 @@ abstract class Tower {
 		}
 		double closestDist = 0.0;
 		Sprite closestTarget = null;
-		for (Sprite t : balloons) {
-			double distanceX = target.x - this.x;
-			double distanceY = target.y - this.y;
+		for (Balloon t : balloons) {
+			System.out.println("detecting");
+
+			double distanceX = t.x - this.x;
+			double distanceY = t.y - this.y;
 
 			double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			System.out.println(distance);
 			if (Double.compare(distance, attackRadius) > 0) {
-				balloons.remove(t);
 				continue;
 			}
 

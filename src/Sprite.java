@@ -16,17 +16,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-public class Sprite extends JButton {
+public class Sprite extends JButton{ 
 	int x;
 	int y;
-	// JLabel img;
+	//JLabel img;
 	Image img;
 	int tempy;
 	int tempx;
 	int sizeX = 40;
 	int sizeY = 45;
 	int vx = 0, vy = 0, ay = 1;
-
+	
 	AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
 	// constructs player as affinetransform instead of image
@@ -36,25 +36,27 @@ public class Sprite extends JButton {
 		y = 405;
 		img = getImage(filename);
 
-		this.setBounds(x, y, 100, 100);
+		this.setBounds(x,y,100,100);
 		init(x, y);
-
+		
 	}
+
 
 	public Sprite(String f, int x2, int y2) {
 		// TODO Auto-generated constructor stub
-		x = x2;
-		y = y2;
+		x=x2;
+		y=y2;
 		img = getImage(f);
 		init(x, y);
 	}
 
-	// move with input from driver
-	public void move() {
-		tx.translate(vx, vy);
-		// System.out.println(vx + " " + vy);
-	}
 
+	// move with input from driver
+	public void move() {		
+		tx.translate(vx, vy);
+		//System.out.println(vx + " " + vy);
+	}
+	
 	// use find affinetransform current position
 	public int gety() {
 		return (int) tx.getTranslateY();
@@ -64,10 +66,11 @@ public class Sprite extends JButton {
 		return (int) tx.getTranslateX();
 	}
 
-	public void rotateCW() {
+	
+	public void rotateCW(){
 		tx.rotate(2);
 	}
-
+	
 	// "rotate" based on direction
 	public void rotateleft() {
 		img = getImage("Playerleft.png");
@@ -98,19 +101,21 @@ public class Sprite extends JButton {
 	// draw the affinetransform
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
+		
+		//example resizing image on call to paint
+		BufferedImage resizedImg = new BufferedImage(200,200, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g3 = resizedImg.createGraphics();
 
-		// example resizing image on call to paint
-		BufferedImage resizedImg = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g3 = resizedImg.createGraphics();
-
-		g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g3.drawImage(img, 0, 0, sizeX, sizeY, null);
-		g3.dispose();
-
-		// example rotating image on call to paint
+	    g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g3.drawImage(img, 0, 0, sizeX, sizeY, null);
+	    g3.dispose();
+	    
+	    //example rotating image on call to paint
 //	    tx.rotate(1,50,50);
 		g2.drawImage(resizedImg, tx, null);
-
+		
+		
+		
 	}
 
 	// converts image to make it drawable in paint

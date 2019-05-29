@@ -64,8 +64,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			p.paint(g);
 
 		}
+		for(Balloon b : balloons) {
+			g.drawOval(b.x, b.y, 30, 30);
+		}
 		for (Tower t : towers) {
 			t.paint(g);
+			g.drawOval(t.x, t.y, 30, 30);
 			// for debugging
 			g.drawOval(t.x - 120, t.y + -100, (int) t.attackRadius, (int) t.attackRadius);
 		}
@@ -73,18 +77,21 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	}
 
 	public void update() {
-		b.move();
+		placeTower();
 		for (Tower t : towers) {
 			t.findTarget(balloons);
 			Sprite target = t.getTarget();
-			attackedBalloons.add((Balloon) target);
+			if (target != null) {
+				attackedBalloons.add((Balloon) target);
+			}
+		}
+		if (!attackedBalloons.isEmpty()) {
+			for (Balloon b : attackedBalloons) {
+				b.takeDamage(1);
+			}
 		}
 
-		for (Balloon b : attackedBalloons) {
-			b.takeDamage(1);
-		}
-		placeTower();
-		
+		b.move();
 
 		// System.out.println("move");
 	}
@@ -118,6 +125,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 		// particles
 		particles.add(new Particle(50, 50));
+		balloons.add(b);
 
 		f.add(this);
 
@@ -133,7 +141,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	public void placeTower() {
 		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
 			placingTower = true;
-			System.out.println(placingTower);
+			// System.out.println(placingTower);
 		}
 		if (pressed && placingTower == true && mouseX < 1100) {
 			DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
@@ -145,7 +153,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	@Override
 	public void keyPressed(KeyEvent e) {
 
-		System.out.println("key press " + e.getKeyCode());
+		// System.out.println("key press " + e.getKeyCode());
 		if (e.getKeyCode() == 38) {
 			// up
 			// b.moveTo(0,0);
@@ -174,10 +182,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(e.getX() + " " + e.getY());
+		// System.out.println(e.getX() + " " + e.getY());
 		pressed = false;
 		if (e.getComponent().getClass() == Sprite.class) {
-			System.out.println("clicked on a sprite");
+			// System.out.println("clicked on a sprite");
 		}
 
 	}
@@ -200,7 +208,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		System.out.println("WAY");
+		// System.out.println("WAY");
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		pressed = true;

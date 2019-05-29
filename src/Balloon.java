@@ -34,6 +34,7 @@ public class Balloon extends Sprite{
 		damage = tier;
 		isAlive = true;
 		speed = 5;
+
 		createPath();
 	}
 		
@@ -81,6 +82,7 @@ public class Balloon extends Sprite{
 			health = tier;
 			damage = tier;
 			speed = 5;
+
 			img = getImage(updateImage(tier)); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
 		}
 		else {
@@ -124,26 +126,29 @@ public class Balloon extends Sprite{
 				if(this.x > x1) {
 					vy = 0;
 					tx.translate(-speed, vy);
-					this.x -= speed;
+					x =  (int) tx.getTranslateX();
+
 				}
 			
 				else if(this.x < x1) {
 					//this.x += speed;
 					vy = 0;
 					tx.translate(speed, vy);
-					this.x += speed;
+					x = (int) tx.getTranslateX();
 				}
 				
 				else if(this.y > y1) {
 					//vx = 0;
 					tx.translate(0, -speed);
-					this.y -= speed;
+					y = (int) tx.getTranslateY();
+
 				}
 				
 				else if(this.y < y1) {
 					//vx = 0;
 					tx.translate(0, speed);
-					this.y += speed;
+					y = (int) tx.getTranslateY();
+
 				}
 			}
 			
