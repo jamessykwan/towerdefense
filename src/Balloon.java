@@ -122,7 +122,6 @@ public class Balloon extends Sprite{
 			int x1 = c.x;
 			int y1 = c.y;
 				
-			if(Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
 				if(this.x > x1) {
 					vy = 0;
 					tx.translate(-speed, vy);
@@ -158,4 +157,4 @@ public class Balloon extends Sprite{
 				
 		}
 	}
-}
+
