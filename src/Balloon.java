@@ -56,14 +56,14 @@ public class Balloon extends Sprite{
 		path.add(new Coordinate(410, 673));
 		path.add(new Coordinate(70, 673));
 		path.add(new Coordinate(70, 850));
-		path.add(new Coordinate(877, 850));
-		path.add(new Coordinate(877, 556));
-//		path.add(new Coordinate(305, 480));
-//		path.add(new Coordinate(305, 355));
-//		path.add(new Coordinate(440, 355));
-//		path.add(new Coordinate(440, 215));
-//		path.add(new Coordinate(255, 215));
-//		path.add(new Coordinate(255, 0));
+		path.add(new Coordinate(875, 850));
+		path.add(new Coordinate(875, 562));
+		path.add(new Coordinate(610, 563));
+		path.add(new Coordinate(610, 310));
+		path.add(new Coordinate(880, 310));
+		path.add(new Coordinate(880, 20));
+		path.add(new Coordinate(517, 20));
+		path.add(new Coordinate(517, -100));
 	}
 	
 	public void deletePath() {
@@ -133,9 +133,6 @@ public class Balloon extends Sprite{
 			int y1 = c.y;
 				
 			if(Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
-				
-				System.out.println("Diff: " + (y1));
-				System.out.println((Math.abs(x1 - x) > speed) + " " + (Math.abs(y1 - y) > speed));
 				
 				if(this.x > x1 && Math.abs(x1 - x) > speed ) {
 					tx.translate(-speed, 0);
