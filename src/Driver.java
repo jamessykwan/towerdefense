@@ -22,12 +22,15 @@ import java.awt.geom.AffineTransform;
 public class Driver extends JPanel implements ActionListener, KeyListener,
 		MouseListener, MouseMotionListener {
 
+	int numBalloons = 10;
 	int screen_width = 1500;
 	int screen_height = 1000;
 	Balloon b;
-
+	ArrayList<Balloon> bs = new ArrayList<Balloon>();
+	Level one;
+	
 	Background bg;
-	int my_variable = 0; //example
+	int pHealth = 100; //example
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	ArrayList<Particle> particles = new ArrayList<Particle>();
 	
@@ -42,14 +45,19 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		g.setFont(font);
 		
 		g.setColor(Color.RED);
-		g.drawString(("my_variable:")+Integer.toString(my_variable), 0, 870);
+		g.drawString(("Health:")+Integer.toString(pHealth), 1100, 870);
 		g.setFont(font2);
 		g.setColor(Color.CYAN);
 	
 		//paint sprite
 		b.paint(g);
-	
-		
+
+		//System.out.println(bs.size());
+				
+//		for(Balloon b: bs) {
+//		//	b.paint(g);
+//		}
+				
 		g.setColor(Color.BLACK);
 		for(Particle p : particles){
 			p.paint(g);
@@ -64,7 +72,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	public void update() {
 		b.move();
-		
+		for(Balloon b: bs) {
+			//b.move();
+		}		
 		//System.out.println("move");
 	}
 
@@ -93,6 +103,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		//sprite instantiation
 		b = new Balloon(3);
 		b.addMouseListener(this);
+			
+//		for(int i = 0; i< numBalloons; i++) {
+//			bs.add(new Balloon((int)(Math.random()*3), -75*i, 405));
+//			bs.get(i).addMouseListener(this);
+//		}
 		
 		//particles
 		particles.add(new Particle(50,50));
@@ -116,8 +131,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		if(e.getKeyCode()==38){
 			//up
 			//b.moveTo(0,0);
-			b.takeDamage(1);
-
+//			if(bs.size() != 0) {
+//				bs.get(0).takeDamage(1);
+//				if(!bs.get(0).isAlive) {
+//					bs.remove(0);
+//					while(bs.remove(null));
+//				}
+//			}
 		}
 	}
 	
@@ -134,7 +154,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		//System.out.println("key press "+e.getKeyCode());
 		if(e.getKeyCode()==38){
 			//up
-			b.deletePath();
 		}
 
 	}

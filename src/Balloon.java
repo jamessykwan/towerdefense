@@ -36,22 +36,34 @@ public class Balloon extends Sprite{
 		speed = 5;
 		createPath();
 	}
+	
+	public Balloon(int tier, int xpos, int ypos) {
+		
+		super(updateImage(tier), xpos, ypos);
+		this.tier = tier;
+		health = tier;
+		damage = tier;
+		isAlive = true;
+		speed = 5;
+		createPath();
+	}
+	
 		
 	public void createPath() {
-		path.add(new Coordinate(85, 405));
-		path.add(new Coordinate(80, 265));
-		path.add(new Coordinate(205, 265));
-		path.add(new Coordinate(205, 545));
-		path.add(new Coordinate(30, 545));
-		path.add(new Coordinate(30, 635));
-		path.add(new Coordinate(440, 635));
-		path.add(new Coordinate(435, 480));
-		path.add(new Coordinate(305, 480));
-		path.add(new Coordinate(305, 355));
-		path.add(new Coordinate(440, 355));
-		path.add(new Coordinate(440, 215));
-		path.add(new Coordinate(255, 215));
-		path.add(new Coordinate(255, 0));
+		path.add(new Coordinate(156, 405));
+		path.add(new Coordinate(156, 140));
+		path.add(new Coordinate(410, 140));
+		path.add(new Coordinate(410, 673));
+		path.add(new Coordinate(70, 673));
+		path.add(new Coordinate(70, 850));
+		path.add(new Coordinate(877, 850));
+		path.add(new Coordinate(877, 556));
+//		path.add(new Coordinate(305, 480));
+//		path.add(new Coordinate(305, 355));
+//		path.add(new Coordinate(440, 355));
+//		path.add(new Coordinate(440, 215));
+//		path.add(new Coordinate(255, 215));
+//		path.add(new Coordinate(255, 0));
 	}
 	
 	public void deletePath() {
@@ -121,34 +133,40 @@ public class Balloon extends Sprite{
 			int y1 = c.y;
 				
 			if(Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
-				if(this.x > x1) {
-					vy = 0;
-					tx.translate(-speed, vy);
-					this.x -= speed;
+				
+				System.out.println("Diff: " + (y1));
+				System.out.println((Math.abs(x1 - x) > speed) + " " + (Math.abs(y1 - y) > speed));
+				
+				if(this.x > x1 && Math.abs(x1 - x) > speed ) {
+					tx.translate(-speed, 0);
+					x = (int) tx.getTranslateX();
 				}
 			
-				else if(this.x < x1) {
+				else if(this.x < x1 && Math.abs(x1 - x) > speed ) {
 					//this.x += speed;
-					vy = 0;
-					tx.translate(speed, vy);
-					this.x += speed;
+					tx.translate(speed, 0);
+					x = (int) tx.getTranslateX();
+
 				}
 				
-				else if(this.y > y1) {
+				else if(this.y > y1 && Math.abs(y1 - y) > speed) {
 					//vx = 0;
 					tx.translate(0, -speed);
-					this.y -= speed;
+					y = (int) tx.getTranslateY();
 				}
 				
-				else if(this.y < y1) {
+				else if(this.y < y1 && Math.abs(y1 - y) > speed) {
 					//vx = 0;
 					tx.translate(0, speed);
-					this.y += speed;
+					y = (int) tx.getTranslateY();
+
 				}
+				
 			}
 			
 			else {
 				path.remove(0);
+				System.out.println("reached point");
 			}
 				
 		}
