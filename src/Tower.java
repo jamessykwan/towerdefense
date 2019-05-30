@@ -55,10 +55,10 @@ abstract class Tower {
 		for (Balloon t : balloons) {
 			System.out.println("detecting");
 
-			double distanceX = t.x - this.x;
-			double distanceY = t.y - this.y;
+			double distanceX = t.x+ 10 - this.x;
+			double distanceY = t.y+10 - this.y;
 
-			double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+			double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
 			System.out.println(distance);
 			if (Double.compare(distance, attackRadius) > 0) {
 				continue;
