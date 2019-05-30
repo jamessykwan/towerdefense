@@ -18,15 +18,15 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public Dimension getMinimumSize() {
-        return new Dimension(800, 600);
+        return new Dimension(1200, 1000);
     }
 
     public Dimension getMaximumSize() {
-        return new Dimension(800, 600);
+        return new Dimension(1000, 1000);
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(800, 600);
+        return new Dimension(1000, 1000);
     }
 
     public Point getMouseCoordinate() {
@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         mouseX = e.getX();
         mouseY = e.getY();
         mousePressed = true;
+
     }
 
     @Override
@@ -49,6 +50,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         mouseX = e.getX();
         mouseY = e.getY();
         mousePressed = true;
+        DartTower tower = new DartTower();
+        tower.setPosition(new Point(mouseX, mouseY));
+        game.towers.add(tower);
     }
 
     @Override

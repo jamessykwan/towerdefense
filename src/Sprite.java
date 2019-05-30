@@ -129,5 +129,3 @@ public class Sprite extends JButton{
 		}
 		return tempImage;
 	}
-
-}
