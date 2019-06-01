@@ -33,7 +33,7 @@ public class Balloon extends Sprite{
 		health = tier;
 		damage = tier;
 		isAlive = true;
-		speed = 5;
+		speed = 2*tier;
 		createPath();
 	}
 	
@@ -44,7 +44,7 @@ public class Balloon extends Sprite{
 		health = tier;
 		damage = tier;
 		isAlive = true;
-		speed = 5;
+		speed = 2*tier;
 		createPath();
 	}
 	
@@ -64,10 +64,6 @@ public class Balloon extends Sprite{
 		path.add(new Coordinate(880, 20));
 		path.add(new Coordinate(517, 20));
 		path.add(new Coordinate(517, -100));
-	}
-	
-	public void deletePath() {
-		path.clear();
 	}
 	
 	/*
@@ -92,12 +88,11 @@ public class Balloon extends Sprite{
 			tier--;
 			health = tier;
 			damage = tier;
-			speed = 5;
+			speed = 2*tier;
 			img = getImage(updateImage(tier)); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
 		}
 		else {
 			isAlive = false;
-			deletePath();			
 		}
 	}
 	
@@ -120,6 +115,10 @@ public class Balloon extends Sprite{
 		
 	}
 	
+	public boolean isFinished() {
+		return (path.size()==0);
+	}
+	
 	/*
 	 * moves to the first coordinate in path
 	 * then deletes the first coordinate from path and 
@@ -131,7 +130,7 @@ public class Balloon extends Sprite{
 			Coordinate c = path.get(0);
 			int x1 = c.x;
 			int y1 = c.y;
-				
+			
 			if(Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
 				
 				if(this.x > x1 && Math.abs(x1 - x) > speed ) {
@@ -143,7 +142,6 @@ public class Balloon extends Sprite{
 					//this.x += speed;
 					tx.translate(speed, 0);
 					x = (int) tx.getTranslateX();
-
 				}
 				
 				else if(this.y > y1 && Math.abs(y1 - y) > speed) {
@@ -156,14 +154,10 @@ public class Balloon extends Sprite{
 					//vx = 0;
 					tx.translate(0, speed);
 					y = (int) tx.getTranslateY();
-
 				}
-				
 			}
-			
 			else {
 				path.remove(0);
-				System.out.println("reached point");
 			}
 				
 		}

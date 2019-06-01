@@ -50,32 +50,46 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		g.setColor(Color.CYAN);
 	
 		//paint sprite
-		b.paint(g);
+//		if(b.isAlive) {
+//			b.paint(g);
+//		}
+//		else {
+//			deleteBalloon(b);
+//		}
 
 		//System.out.println(bs.size());
 				
-//		for(Balloon b: bs) {
-//		//	b.paint(g);
-//		}
-				
+		for(Balloon b: bs) {
+			if(b.isAlive) {
+				b.paint(g);
+			}
+			else {
+				deleteBalloon(b);
+			}
+//			System.out.print(b.x + " ");
+		}
+		System.out.println();
+
 		g.setColor(Color.BLACK);
 		for(Particle p : particles){
 			p.paint(g);
-			
 		}
-		
-		
-		
 	
 	}
 
-
 	public void update() {
-		b.move();
-		for(Balloon b: bs) {
-			//b.move();
-		}		
-		//System.out.println("move");
+//		b.move();
+		for(int i = 0; i < bs.size(); i++) {
+			Balloon b = bs.get(i);
+			b.move();
+			if(b.isFinished()) {
+				int damage = b.damage;
+				bs.remove(i);
+//				System.out.println("Num Balloons " + bs.size());
+				pHealth -= damage;	
+			}
+		}	
+		
 	}
 
 	@Override
@@ -104,10 +118,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		b = new Balloon(3);
 		b.addMouseListener(this);
 			
-//		for(int i = 0; i< numBalloons; i++) {
-//			bs.add(new Balloon((int)(Math.random()*3), -75*i, 405));
-//			bs.get(i).addMouseListener(this);
-//		}
+		for(int i = 0; i< numBalloons; i++) {
+			int r = (int)(Math.random()* 3) + 1;
+			System.out.println(r);
+			bs.add(new Balloon(r, -75*i, 405));
+			bs.get(i).addMouseListener(this);
+		}
 		
 		//particles
 		particles.add(new Particle(50,50));
@@ -124,6 +140,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	Timer t;
 
+	public void deleteBalloon(Balloon b) {
+		b = null;
+	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 
@@ -131,13 +151,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		if(e.getKeyCode()==38){
 			//up
 			//b.moveTo(0,0);
-//			if(bs.size() != 0) {
-//				bs.get(0).takeDamage(1);
-//				if(!bs.get(0).isAlive) {
-//					bs.remove(0);
-//					while(bs.remove(null));
-//				}
-//			}
+			if(bs.size() != 0) {
+				bs.get(0).takeDamage(1);
+				if(!bs.get(0).isAlive) {
+					bs.remove(0);
+				}
+			}
+//			b.takeDamage(1);
 		}
 	}
 	
