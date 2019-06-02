@@ -15,11 +15,11 @@ public class Background {
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
 	// drawing affinetransform in background
-	public Background(String filename) {
+	public Background(String filename, int x, int y) {
 		String src = new File("").getAbsolutePath() + "/src/";
 		ImageIcon ast = new ImageIcon(src + filename);
-		x = 0;
-		y = 0;
+		this.x = x;
+		this.y = y;
 		img = getImage(filename);
 
 	}

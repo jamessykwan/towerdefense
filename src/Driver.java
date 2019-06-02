@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,8 +20,7 @@ import javax.swing.Timer;
 import java.awt.image.*;
 import java.awt.geom.AffineTransform;
 
-public class Driver extends JPanel implements ActionListener, KeyListener,
-		MouseListener, MouseMotionListener {
+public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
 	int numBalloons = 10;
 	int screen_width = 1500;
@@ -30,21 +30,36 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	Level one;
 	
 	Background bg;
+<<<<<<< HEAD
 	int pHealth = 100; //example
+=======
+	Sprite dartTowerSelector;
+	int my_variable = 0; // example
+>>>>>>> master
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 	ArrayList<Particle> particles = new ArrayList<Particle>();
-	
-	//fonts
+	public static ArrayList<DartTower> towers = new ArrayList<>();
+	public static ArrayList<Balloon> balloons = new ArrayList<>();
+	public static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
+	private Sprite player;
+	private boolean placingTower;
+	boolean pressed = false;
+	int mouseX;
+	int mouseY;
+	Tower tempTower;
+
+	// fonts
 	Font font = new Font("Courier New", 1, 50);
 	Font font2 = new Font("Courier New", 1, 30);
-	
+
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		bg.paint(g);
-		
+		dartTowerSelector.paint(g);
 		g.setFont(font);
-		
+
 		g.setColor(Color.RED);
+<<<<<<< HEAD
 		g.drawString(("Health:")+Integer.toString(pHealth), 1100, 870);
 		g.setFont(font2);
 		g.setColor(Color.CYAN);
@@ -69,10 +84,19 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 //			System.out.print(b.x + " ");
 		}
 		System.out.println();
+=======
+		g.drawString(("my_variable:") + Integer.toString(my_variable), 0, 870);
+		g.setFont(font2);
+		g.setColor(Color.CYAN);
+
+		// paint sprite
+		b.paint(g);
+>>>>>>> master
 
 		g.setColor(Color.BLACK);
-		for(Particle p : particles){
+		for (Particle p : particles) {
 			p.paint(g);
+<<<<<<< HEAD
 		}
 	
 	}
@@ -90,6 +114,40 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 			}
 		}	
 		
+=======
+
+		}
+		for(Balloon b : balloons) {
+			g.drawOval(b.x, b.y, 30, 30);
+		}
+		for (Tower t : towers) {
+			t.paint(g);
+			g.drawOval(t.x, t.y, 30, 30);
+			// for debugging
+			g.drawOval(t.x - 120, t.y + -100, (int) t.attackRadius, (int) t.attackRadius);
+		}
+
+	}
+
+	public void update() {
+		placeTower();
+		for (Tower t : towers) {
+			t.findTarget(balloons);
+			Sprite target = t.getTarget();
+			if (target != null) {
+				attackedBalloons.add((Balloon) target);
+			}
+		}
+		if (!attackedBalloons.isEmpty()) {
+			for (Balloon b : attackedBalloons) {
+				b.takeDamage(1);
+			}
+		}
+
+		b.move();
+
+		// System.out.println("move");
+>>>>>>> master
 	}
 
 	@Override
@@ -111,12 +169,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		f.addKeyListener(this);
 		f.addMouseMotionListener(this);
 		f.addMouseListener(this);
-		
-		bg = new Background("hqdefault.jpg");
-		
-		//sprite instantiation
+		placingTower = false;
+		bg = new Background("hqdefault.jpg", 0, 0);
+		dartTowerSelector = new Sprite("weirdPixelMonkey.png", 1200, 100);
+
+		// sprite instantiation
 		b = new Balloon(3);
 		b.addMouseListener(this);
+<<<<<<< HEAD
 			
 		for(int i = 0; i< numBalloons; i++) {
 			int r = (int)(Math.random()* 3) + 1;
@@ -127,11 +187,16 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		
 		//particles
 		particles.add(new Particle(50,50));
+=======
+>>>>>>> master
 
-	
+		// particles
+		particles.add(new Particle(50, 50));
+		balloons.add(b);
+
 		f.add(this);
-		
-		//drawing timer
+
+		// drawing timer
 		t = new Timer(17, this);
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,6 +205,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	Timer t;
 
+<<<<<<< HEAD
 	public void deleteBalloon(Balloon b) {
 		b = null;
 	}
@@ -158,9 +224,32 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 				}
 			}
 //			b.takeDamage(1);
+=======
+	public void placeTower() {
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
+			placingTower = true;
+			// System.out.println(placingTower);
+		}
+		if (pressed && placingTower == true && mouseX < 1100) {
+			DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
+			towers.add(tower);
+			placingTower = false;
 		}
 	}
-	
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+
+		// System.out.println("key press " + e.getKeyCode());
+		if (e.getKeyCode() == 38) {
+			// up
+			// b.moveTo(0,0);
+			b.takeDamage(1);
+
+>>>>>>> master
+		}
+	}
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -170,33 +259,42 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+<<<<<<< HEAD
 		
 		//System.out.println("key press "+e.getKeyCode());
 		if(e.getKeyCode()==38){
 			//up
+=======
+
+		// System.out.println("key press "+e.getKeyCode());
+		if (e.getKeyCode() == 38) {
+			// up
+			b.deletePath();
+>>>>>>> master
 		}
 
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(e.getX() + " "+ e.getY());
-		pressed = true;
-		if(e.getComponent().getClass()==Sprite.class){
-			System.out.println("clicked on a sprite");
+		// System.out.println(e.getX() + " " + e.getY());
+		pressed = false;
+		if (e.getComponent().getClass() == Sprite.class) {
+			// System.out.println("clicked on a sprite");
 		}
-	
+
 	}
-	
-	boolean pressed = false;
+
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
+		mouseX = e.getX();
+		mouseY = e.getY();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-
+		mouseX = e.getX();
+		mouseY = e.getY();
 	}
 
 	public void reset() {
@@ -205,24 +303,32 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		System.out.println("WAY");
+		// System.out.println("WAY");
+		int mouseX = e.getX();
+		int mouseY = e.getY();
+		pressed = true;
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		mouseX = e.getX();
+		mouseY = e.getY();
 		pressed = false;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		particles.add(new Particle(e.getX()-5,e.getY()-5));
+		mouseX = e.getX();
+		mouseY = e.getY();
+		pressed = false;
 
 	}
 
-	
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
 		// TODO Auto-generated method stub
 
 	}

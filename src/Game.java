@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Game implements Runnable {
 
     Background bg;
-    ArrayList<DartTower> towers = new ArrayList<>();
-    ArrayList<Sprite> balloons = new ArrayList<Sprite>();
+    public ArrayList<DartTower> towers = new ArrayList<>();
+    public ArrayList<Sprite> balloons = new ArrayList<Sprite>();
     private Sprite player;
     private GamePanel gamePanel;
     private Point mouseCoordinate;
@@ -24,7 +24,7 @@ public class Game implements Runnable {
     }
 
     public void init() {
-        DartTower tower = new DartTower();
+        DartTower tower = new DartTower(0,0);
         //towers.add(tower);
         gamePanel = new GamePanel(this);
         gamePanel.setPreferredSize((gamePanel.getPreferredSize()));
@@ -51,7 +51,7 @@ public class Game implements Runnable {
     void draw(Graphics g) {
 
         for (DartTower tower : towers) {
-            tower.draw(g);
+            tower.paint(g);
         }
 
     }

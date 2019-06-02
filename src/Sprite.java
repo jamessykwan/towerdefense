@@ -100,19 +100,20 @@ public class Sprite extends JButton{
 
 	// draw the affinetransform
 	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
+		Graphics2D g2 = (Graphics2D) g.create();
 		
 		//example resizing image on call to paint
 		BufferedImage resizedImg = new BufferedImage(200,200, BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D g3 = resizedImg.createGraphics();
+	    //Graphics2D g3 = resizedImg.createGraphics();
 
-	    g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	    g3.drawImage(img, 0, 0, sizeX, sizeY, null);
-	    g3.dispose();
+	    //g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    //g3.drawImage(img, 0, 0, sizeX, sizeY, null);
+	    //g3.dispose();
 	    
 	    //example rotating image on call to paint
 //	    tx.rotate(1,50,50);
-		g2.drawImage(resizedImg, tx, null);
+		g2.drawImage(img, x,y,100,100, null);
+		g2.dispose();
 		
 		
 		

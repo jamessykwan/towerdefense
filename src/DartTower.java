@@ -1,8 +1,7 @@
 public class DartTower extends Tower {
 
-
-    @Override
-    void interact(Game game, double deltaTime) {
-
-    }
+	public DartTower(int x, int y) {
+		super(x, y);
+		attackRadius = 300;
+	}
 }

@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
         mouseX = e.getX();
         mouseY = e.getY();
         mousePressed = true;
-        DartTower tower = new DartTower();
+        DartTower tower = new DartTower(0,0);
         tower.setPosition(new Point(mouseX, mouseY));
         game.towers.add(tower);
     }
