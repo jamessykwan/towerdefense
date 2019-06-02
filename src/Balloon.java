@@ -32,6 +32,39 @@ public class Balloon extends Sprite {
 		health = tier;
 		damage = tier;
 		isAlive = true;
+<<<<<<< HEAD
+		speed = 2*tier;
+		createPath();
+	}
+	
+	public Balloon(int tier, int xpos, int ypos) {
+		
+		super(updateImage(tier), xpos, ypos);
+		this.tier = tier;
+		health = tier;
+		damage = tier;
+		isAlive = true;
+		speed = 2*tier;
+		createPath();
+	}
+	
+		
+	public void createPath() {
+		path.add(new Coordinate(156, 405));
+		path.add(new Coordinate(156, 140));
+		path.add(new Coordinate(410, 140));
+		path.add(new Coordinate(410, 673));
+		path.add(new Coordinate(70, 673));
+		path.add(new Coordinate(70, 850));
+		path.add(new Coordinate(875, 850));
+		path.add(new Coordinate(875, 562));
+		path.add(new Coordinate(610, 563));
+		path.add(new Coordinate(610, 310));
+		path.add(new Coordinate(880, 310));
+		path.add(new Coordinate(880, 20));
+		path.add(new Coordinate(517, 20));
+		path.add(new Coordinate(517, -100));
+=======
 		speed = 5;
 
 		createPath();
@@ -55,6 +88,7 @@ public class Balloon extends Sprite {
 
 	public void deletePath() {
 		path.clear();
+>>>>>>> master
 	}
 
 	/*
@@ -78,6 +112,13 @@ public class Balloon extends Sprite {
 			tier--;
 			health = tier;
 			damage = tier;
+<<<<<<< HEAD
+			speed = 2*tier;
+			img = getImage(updateImage(tier)); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
+		}
+		else {
+			isAlive = false;
+=======
 			speed = 5;
 
 			img = getImage(updateImage(tier)); // converted getImage to protected b/c it wasn't accessible by Balloon
@@ -85,6 +126,7 @@ public class Balloon extends Sprite {
 		} else {
 			isAlive = false;
 			deletePath();
+>>>>>>> master
 		}
 	}
 
@@ -103,7 +145,15 @@ public class Balloon extends Sprite {
 		}
 
 	}
+<<<<<<< HEAD
+	
+	public boolean isFinished() {
+		return (path.size()==0);
+	}
+	
+=======
 
+>>>>>>> master
 	/*
 	 * moves to the first coordinate in path then deletes the first coordinate from
 	 * path and moves to the new first coordinate from path (originally the second
@@ -114,7 +164,7 @@ public class Balloon extends Sprite {
 			Coordinate c = path.get(0);
 			int x1 = c.x;
 			int y1 = c.y;
-				
+			
 			if(Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
 				
 				if(this.x > x1 && Math.abs(x1 - x) > speed ) {
@@ -126,7 +176,10 @@ public class Balloon extends Sprite {
 					//this.x += speed;
 					tx.translate(speed, 0);
 					x = (int) tx.getTranslateX();
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
 				}
 				
 				else if(this.y > y1 && Math.abs(y1 - y) > speed) {
@@ -139,11 +192,13 @@ public class Balloon extends Sprite {
 					//vx = 0;
 					tx.translate(0, speed);
 					y = (int) tx.getTranslateY();
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
 				}
 				
 			}
-			
 			else {
 				path.remove(0);
 				System.out.println("reached point");
