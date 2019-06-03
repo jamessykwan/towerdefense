@@ -27,8 +27,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     int screen_height = 1000;
     Balloon b;
     ArrayList<Balloon> bs = new ArrayList<Balloon>();
-    Level one;
-
+    double[] rarity = {1, 0, 0};
+    double start;
     Background bg;
 
     int pHealth = 100; //example
@@ -76,8 +76,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         for (Balloon b : bs) {
             if (b.isAlive) {
                 b.paint(g);
-            } else {
-                deleteBalloon(b);
             }
 //			System.out.print(b.x + " ");
         }
@@ -132,7 +130,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             }
         }
 
-
+        if(System.currentTimeMillis() - start > 1000) {
+            int r = (int) (Math.random() * 3) + 1;
+        	bs.add(new Balloon(r, 0, 405));
+        	start = System.currentTimeMillis();
+        	System.out.println("hallehuia");
+        }
         // System.out.println("move");
 
     }
@@ -163,8 +166,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // sprite instantiation
         b = new Balloon(3);
         b.addMouseListener(this);
-
-        for (int i = 0; i < numBalloons; i++) {
+       
+        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
             int r = (int) (Math.random() * 3) + 1;
             //System.out.println(r);
             bs.add(new Balloon(r, -75 * i, 405));
@@ -185,8 +188,25 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         t.start();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
+        start = System.currentTimeMillis();
     }
 
+    public void newLevel(int l){
+    	numBalloons += 5;
+    	for(int i = 0; i< numBalloons; i++) {
+    		double r = Math.random();
+    		if(r < rarity[0]) {
+        		bs.add(new Balloon(1, -75 * i, 405));
+    		}
+    		else if(r < rarity[0] + rarity[1]) {
+    			bs.add(new Balloon(2, -75 * i, 405));
+    		}
+    		else if(r< rarity[0] + rarity[1] + rarity[2]) {
+    			bs.add(new Balloon(3, -75 * i, 405));
+    		}
+    	}
+    }
+    
     public void placeTower() {
         if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
             placingTower = true;
@@ -201,10 +221,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 
     Timer t;
-
-    public void deleteBalloon(Balloon b) {
-        b = null;
-    }
 
     @Override
     public void keyPressed(KeyEvent e) {
