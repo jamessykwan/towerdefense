@@ -26,16 +26,15 @@ abstract class Tower {
 		// g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
 		// + anchorY, null);
 		tower.paint(g);
-
-<<<<<<< HEAD
+	}
     public void draw(Graphics g) {
         //g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY() + anchorY, null);
         tower.paint(g);
         System.out.println("x: " + position.getX() + " y: " + position.getY());
     }
-=======
-	}
->>>>>>> master
+
+
+
 
 	public void setPosition(Point p) {
 		position = p;
