@@ -47,6 +47,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	int mouseX;
 	int mouseY;
 	Tower tempTower;
+	double currentTime;
+	double startTime;
 
 	// fonts
 	Font font = new Font("Courier New", 1, 50);
@@ -108,6 +110,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	}
 
 	public void update() {
+		currentTime = System.currentTimeMillis() - startTime;
 		/*
 		 * if (!attackedBalloons.isEmpty()) { for(int i = 0; i< attackedBalloons.size();
 		 * i++) { attackedBalloons.get(i).takeDamage(1);
@@ -117,11 +120,15 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		 * 
 		 */
 		placeTower();
-		for (Tower t : towers) {
-			t.findTarget(bs);
-			Sprite target = t.getTarget();
-			if (target != null && !attackedBalloons.contains(target)) {
-				// attackedBalloons.add((Balloon) target);
+		if (currentTime % 10 == 0) {
+			for (Tower t : towers) {
+
+				t.findTarget(bs);
+				Sprite target = t.getTarget();
+				if (target != null && !attackedBalloons.contains(target)) {
+					// attackedBalloons.add((Balloon) target);
+				}
+
 			}
 		}
 
@@ -192,6 +199,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
+		startTime = System.currentTimeMillis();
 	}
 
 	public void placeTower() {
