@@ -27,14 +27,13 @@ abstract class Tower {
 		// + anchorY, null);
 		tower.paint(g);
 	}
-    public void draw(Graphics g) {
-        //g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY() + anchorY, null);
-        tower.paint(g);
-        System.out.println("x: " + position.getX() + " y: " + position.getY());
-    }
 
-
-
+	public void draw(Graphics g) {
+		// g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
+		// + anchorY, null);
+		tower.paint(g);
+		System.out.println("x: " + position.getX() + " y: " + position.getY());
+	}
 
 	public void setPosition(Point p) {
 		position = p;
@@ -58,12 +57,12 @@ abstract class Tower {
 
 		}
 		double closestDist = 0.0;
-		Sprite closestTarget = null;
+		Balloon closestTarget = null;
 		for (Balloon t : balloons) {
 			System.out.println("detecting");
 
-			double distanceX = t.x+ 10 - this.x;
-			double distanceY = t.y+10 - this.y;
+			double distanceX = t.x + 10 - this.x;
+			double distanceY = t.y + 10 - this.y;
 
 			double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
 			System.out.println(distance);
@@ -81,10 +80,17 @@ abstract class Tower {
 
 		}
 		setTarget(closestTarget);
+		if (closestTarget != null) {
+			closestTarget.takeDamage(1);
+
+			target = null;
+
+		}
+
 	}
 
 	public void attack(Sprite target) {
-		
+
 	}
 
 	public Sprite getTarget() {
