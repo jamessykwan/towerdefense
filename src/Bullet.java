@@ -12,7 +12,7 @@ public class Bullet extends Sprite {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void move(Balloon target) {
+    public void move(Sprite target) {
 		distanceX = target.x - this.x;
 		distanceY = target.y - this.y;
 	}

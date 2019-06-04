@@ -1,82 +1,73 @@
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class Balloon extends Sprite {
 
-    int health;
-    int damage;
-    int rarity;
-    int speed;
-    int tier;
-    boolean isAlive;
-    ArrayList<Coordinate> path = new ArrayList<Coordinate>();
+    private int health;
+    private int damage;
+    private int speed;
+    private int tier;
+    private boolean isAlive;
+    private ArrayList<Coordinate> path = new ArrayList<>();
 
     public Balloon(String filename) {
         super(filename);
-        health = 1;
-        damage = 1;
-        isAlive = true;
+        setHealth(1);
+        setDamage(1);
+        setAlive(true);
     }
 
-    public Balloon(int tier) {
+    Balloon(int tier) {
 
         super(updateImage(tier));
-        this.tier = tier;
-        health = tier;
-        damage = tier;
-        isAlive = true;
-        speed = 2 * tier;
+        this.setTier(tier);
+        setHealth(tier);
+        setDamage(tier);
+        setAlive(true);
+        setSpeed(2 * tier);
         createPath();
     }
 
-    public Balloon(int tier, int xpos, int ypos) {
+    Balloon(int tier, int xpos, int ypos) {
 
         super(updateImage(tier), xpos, ypos);
-        this.tier = tier;
-        health = tier;
-        damage = tier;
-        isAlive = true;
-        speed = 2 * tier;
+        this.setTier(tier);
+        setHealth(tier);
+        setDamage(tier);
+        setAlive(true);
+        setSpeed(2 * tier);
         createPath();
     }
 
 
-    public void createPath() {
-        path.add(new Coordinate(156, 405));
-        path.add(new Coordinate(156, 140));
-        path.add(new Coordinate(410, 140));
-        path.add(new Coordinate(410, 673));
-        path.add(new Coordinate(70, 673));
-        path.add(new Coordinate(70, 850));
-        path.add(new Coordinate(875, 850));
-        path.add(new Coordinate(875, 562));
-        path.add(new Coordinate(610, 563));
-        path.add(new Coordinate(610, 310));
-        path.add(new Coordinate(880, 310));
-        path.add(new Coordinate(880, 20));
-        path.add(new Coordinate(517, 20));
-        path.add(new Coordinate(517, -100));
+    private void createPath() {
+        getPath().add(new Coordinate(156, 405));
+        getPath().add(new Coordinate(156, 140));
+        getPath().add(new Coordinate(410, 140));
+        getPath().add(new Coordinate(410, 673));
+        getPath().add(new Coordinate(70, 673));
+        getPath().add(new Coordinate(70, 850));
+        getPath().add(new Coordinate(875, 850));
+        getPath().add(new Coordinate(875, 562));
+        getPath().add(new Coordinate(610, 563));
+        getPath().add(new Coordinate(610, 310));
+        getPath().add(new Coordinate(880, 310));
+        getPath().add(new Coordinate(880, 20));
+        getPath().add(new Coordinate(517, 20));
+        getPath().add(new Coordinate(517, -100));
     }
 
 
-    public void deletePath() {
-        path.clear();
+    void deletePath() {
+        getPath().clear();
     }
 
     /*
      * subtracts from the balloon's health until health is less than zero. Then
      * calls spawnNew()
      */
-    public void takeDamage(int damage) {
-        health -= damage;
-        if (health <= 0) {
+    void takeDamage(int damage) {
+        setHealth(getHealth() - damage);
+        if (getHealth() <= 0) {
             spawnNew();
         }
     }
@@ -86,22 +77,22 @@ public class Balloon extends Sprite {
      * Once it goes down a tier, the traits of the balloon are reset to the new
      * tier's values.
      */
-    public void spawnNew() {
-        if (tier > 1) {
-            tier--;
-            health = tier;
-            damage = tier;
-            speed = 2 * tier;
-            img = getImage(updateImage(tier)); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
+    private void spawnNew() {
+        if (getTier() > 1) {
+            setTier(getTier() - 1);
+            setHealth(getTier());
+            setDamage(getTier());
+            setSpeed(2 * getTier());
+            img = getImage(updateImage(getTier())); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
         } else {
-            isAlive = false;
+            setAlive(false);
         }
     }
 
     /*
      * Switches the image of the balloon based on its tier
      */
-    public static String updateImage(int tier) {
+    private static String updateImage(int tier) {
         if (tier == 3) {
             return "greenBalloon.png";
         } else if (tier == 2) {
@@ -114,8 +105,8 @@ public class Balloon extends Sprite {
 
     }
 
-    public boolean isFinished() {
-        return (path.size() == 0);
+    boolean isFinished() {
+        return (getPath().size() == 0);
     }
 
 
@@ -125,40 +116,87 @@ public class Balloon extends Sprite {
      * point). It does this until path is empty.
      */
     public void move() {
-        if (path.size() != 0) {
-            Coordinate c = path.get(0);
+        if (getPath().size() != 0) {
+            Coordinate c = getPath().get(0);
             int x1 = c.x;
             int y1 = c.y;
 
-            if (Math.abs(x1 - x) > speed || Math.abs(y1 - y) > speed) {
+            if (Math.abs(x1 - x) > getSpeed() || Math.abs(y1 - y) > getSpeed()) {
 
-                if (this.x > x1 && Math.abs(x1 - x) > speed) {
-                    tx.translate(-speed, 0);
+                if (this.x > x1 && Math.abs(x1 - x) > getSpeed()) {
+                    tx.translate(-getSpeed(), 0);
                     x = (int) tx.getTranslateX();
-                } else if (this.x < x1 && Math.abs(x1 - x) > speed) {
+                } else if (this.x < x1 && Math.abs(x1 - x) > getSpeed()) {
                     //this.x += speed;
-                    tx.translate(speed, 0);
+                    tx.translate(getSpeed(), 0);
                     x = (int) tx.getTranslateX();
 
 
-                } else if (this.y > y1 && Math.abs(y1 - y) > speed) {
+                } else if (this.y > y1 && Math.abs(y1 - y) > getSpeed()) {
                     //vx = 0;
-                    tx.translate(0, -speed);
+                    tx.translate(0, -getSpeed());
                     y = (int) tx.getTranslateY();
-                } else if (this.y < y1 && Math.abs(y1 - y) > speed) {
+                } else if (this.y < y1 && Math.abs(y1 - y) > getSpeed()) {
                     //vx = 0;
-                    tx.translate(0, speed);
+                    tx.translate(0, getSpeed());
                     y = (int) tx.getTranslateY();
 
 
                 }
 
             } else {
-                path.remove(0);
+                getPath().remove(0);
                 //System.out.println("reached point");
             }
 
         }
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public void setTier(int tier) {
+        this.tier = tier;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public ArrayList<Coordinate> getPath() {
+        return path;
+    }
+
+    public void setPath(ArrayList<Coordinate> path) {
+        this.path = path;
+    }
 }
