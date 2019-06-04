@@ -30,6 +30,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     double[] rarity = {1, 0, 0};
     double start;
     Background bg;
+    int level = 1;
 
     int pHealth = 100; //example
 
@@ -130,12 +131,15 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             }
         }
 
-        if(System.currentTimeMillis() - start > 1000) {
-            int r = (int) (Math.random() * 3) + 1;
-        	bs.add(new Balloon(r, 0, 405));
-        	start = System.currentTimeMillis();
-        	System.out.println("hallehuia");
+        if(bs.size()==0) {
+        	level++;
+        	newLevel(level);
         }
+//        if(System.currentTimeMillis() - start > 1000) {
+//            int r = (int) (Math.random() * 3) + 1;
+//        	bs.add(new Balloon(r, 0, 405));
+//        	start = System.currentTimeMillis();
+//        }
         // System.out.println("move");
 
     }
@@ -167,12 +171,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         b = new Balloon(3);
         b.addMouseListener(this);
        
-        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
-            int r = (int) (Math.random() * 3) + 1;
-            //System.out.println(r);
-            bs.add(new Balloon(r, -75 * i, 405));
-            bs.get(i).addMouseListener(this);
-        }
+//        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
+//            int r = (int) (Math.random() * 3) + 1;
+//            //System.out.println(r);
+//            bs.add(new Balloon(r, -75 * i, 405));
+//            bs.get(i).addMouseListener(this);
+//        }
+        newLevel(level);
 
         //particles
         particles.add(new Particle(50, 50));
@@ -192,7 +197,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     }
 
     public void newLevel(int l){
-    	numBalloons += 5;
     	for(int i = 0; i< numBalloons; i++) {
     		double r = Math.random();
     		if(r < rarity[0]) {
@@ -205,6 +209,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     			bs.add(new Balloon(3, -75 * i, 405));
     		}
     	}
+    	
+    	numBalloons += 5;
+    	rarity[0] -= 0.075;
+    	rarity[1] += 0.05;
+    	rarity[2] += 0.025;
     }
     
     public void placeTower() {
