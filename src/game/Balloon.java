@@ -1,3 +1,5 @@
+package game;
+
 import java.util.ArrayList;
 
 public class Balloon extends Sprite {
@@ -23,7 +25,7 @@ public class Balloon extends Sprite {
         setHealth(tier);
         setDamage(tier);
         setAlive(true);
-        setSpeed(2 * tier);
+        setSpeed((int) 1.2 * tier);
         createPath();
     }
 
@@ -34,7 +36,7 @@ public class Balloon extends Sprite {
         setHealth(tier);
         setDamage(tier);
         setAlive(true);
-        setSpeed(2 * tier);
+        setSpeed((int) 1.2 * tier);
         createPath();
     }
 
@@ -94,11 +96,11 @@ public class Balloon extends Sprite {
      */
     private static String updateImage(int tier) {
         if (tier == 3) {
-            return "greenBalloon.png";
+            return "../resources/greenBalloon.png";
         } else if (tier == 2) {
-            return "blueBalloon.png";
+            return "../resources/blueBalloon.png";
         } else if (tier == 1) {
-            return "redBalloon.png";
+            return "../resources/redBalloon.png";
         } else {
             return null;
         }

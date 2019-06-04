@@ -1,3 +1,7 @@
+package game;
+
+import game.GameEffects.Dart;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,7 +23,7 @@ abstract class Tower {
     public Tower(int x, int y) {
         this.setX(x);
         this.setY(y);
-        setTower(new Sprite("weirdPixelMonkey.png", x, y));
+        setTower(new Sprite("../resources/weirdPixelMonkey.png", x, y));
     }
 
     public void paint(Graphics g) {
@@ -48,22 +52,17 @@ abstract class Tower {
     public void findTarget(ArrayList<Balloon> sprites) {
         if (getTarget() != null) {
             return;
-
         }
         double closestDist = 0.0;
         Balloon closestTarget = null;
         for (Balloon t : sprites) {
-            System.out.println("detecting");
-
             double distanceX = t.x + 10 - this.getX();
             double distanceY = t.y + 10 - this.getY();
-
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
-            System.out.println(distance);
+            //System.out.println(distance);
             if (Double.compare(distance, getAttackRadius()) > 0) {
                 continue;
             }
-
             if (closestTarget == null) {
                 closestDist = distance;
                 closestTarget = t;
@@ -71,20 +70,17 @@ abstract class Tower {
                 closestDist = distance;
                 closestTarget = t;
             }
-
         }
         setTarget(closestTarget);
         if (closestTarget != null) {
+            Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.x, (int) closestTarget.y));
+            Driver.gameEffects.add(dart);
             closestTarget.takeDamage(1);
-
             setTarget(null);
-
         }
-
     }
 
     public void attack(Sprite target) {
-
     }
 
     public Sprite getTarget() {

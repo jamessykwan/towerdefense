@@ -1,3 +1,5 @@
+package game;
+
 public class DartTower extends Tower {
 
 	public DartTower(int x, int y) {
