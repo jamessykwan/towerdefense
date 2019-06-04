@@ -22,50 +22,48 @@ import java.awt.geom.AffineTransform;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-	int numBalloons = 10;
-	int screen_width = 1500;
-	int screen_height = 1000;
-	Balloon b;
-	ArrayList<Balloon> bs = new ArrayList<Balloon>();
-	Level one;
+    int numBalloons = 10;
+    int screen_width = 1500;
+    int screen_height = 1000;
+    Balloon b;
+    ArrayList<Balloon> bs = new ArrayList<Balloon>();
+    double[] rarity = {1, 0, 0};
+    double start;
+    Background bg;
 
-	Background bg;
+    int pHealth = 100; //example
 
-	int pHealth = 100; // example
+    Sprite dartTowerSelector;
+    int my_variable = 0; // example
 
-	Sprite dartTowerSelector;
-	int my_variable = 0; // example
+    ArrayList<Sprite> sprites = new ArrayList<Sprite>();
+    ArrayList<Particle> particles = new ArrayList<Particle>();
+    public static ArrayList<DartTower> towers = new ArrayList<>();
+    public static ArrayList<Balloon> balloons = new ArrayList<>();
+    public static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
+    private Sprite player;
+    private boolean placingTower;
+    boolean pressed = false;
+    int mouseX;
+    int mouseY;
+    Tower tempTower;
 
-	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-	ArrayList<Particle> particles = new ArrayList<Particle>();
-	public static ArrayList<DartTower> towers = new ArrayList<>();
-	public static ArrayList<Balloon> balloons = new ArrayList<>();
-	public static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
-	private Sprite player;
-	private boolean placingTower;
-	boolean pressed = false;
-	int mouseX;
-	int mouseY;
-	Tower tempTower;
-	double currentTime;
-	double startTime;
+    // fonts
+    Font font = new Font("Courier New", 1, 50);
+    Font font2 = new Font("Courier New", 1, 30);
 
-	// fonts
-	Font font = new Font("Courier New", 1, 50);
-	Font font2 = new Font("Courier New", 1, 30);
+    public void paint(Graphics g) {
+        super.paintComponent(g);
+        bg.paint(g);
+        dartTowerSelector.paint(g);
+        g.setFont(font);
 
-	public void paint(Graphics g) {
-		super.paintComponent(g);
-		bg.paint(g);
-		dartTowerSelector.paint(g);
-		g.setFont(font);
+        g.setColor(Color.RED);
+        g.drawString(("Health:") + Integer.toString(pHealth), 1100, 870);
+        g.setFont(font2);
+        g.setColor(Color.CYAN);
 
-		g.setColor(Color.RED);
-		g.drawString(("Health:") + Integer.toString(pHealth), 1100, 870);
-		g.setFont(font2);
-		g.setColor(Color.CYAN);
 
-		// paint sprite
 //		if(b.isAlive) {
 //			b.paint(g);
 //		}
@@ -76,12 +74,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		//
 		// System.out.println(bs.size());
 
-		for (Balloon b : bs) {
-			if (b.isAlive) {
-				b.paint(g);
-			} else {
-				deleteBalloon(b);
-			}
+
+        for (Balloon b : bs) {
+            if (b.isAlive) {
+                b.paint(g);
+            }
+
 //			System.out.print(b.x + " ");
 		}
 		// System.out.println();
@@ -143,179 +141,199 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 				int damage = b.damage;
 				bs.remove(i);
 //				System.out.println("Num Balloons " + bs.size());
-				pHealth -= damage;
-			}
-		}
+                pHealth -= damage;
+            }
+        }
 
-		// System.out.println("move");
+        if(System.currentTimeMillis() - start > 1000) {
+            int r = (int) (Math.random() * 3) + 1;
+        	bs.add(new Balloon(r, 0, 405));
+        	start = System.currentTimeMillis();
+        	System.out.println("hallehuia");
+        }
+        // System.out.println("move");
 
-	}
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		update();
-		repaint();
-	}
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        update();
+        repaint();
+    }
 
-	public static void main(String[] arg) {
-		Driver d = new Driver();
-	}
+    public static void main(String[] arg) {
+        Driver d = new Driver();
+    }
 
-	public Driver() {
-		JFrame f = new JFrame();
-		f.setTitle("Frogger");
+    public Driver() {
+        JFrame f = new JFrame();
+        f.setTitle("Frogger");
 
-		f.setSize(screen_width, screen_height);
-		f.setResizable(false);
-		f.addKeyListener(this);
-		f.addMouseMotionListener(this);
-		f.addMouseListener(this);
-		placingTower = false;
-		bg = new Background("hqdefault.jpg", 0, 0);
-		dartTowerSelector = new Sprite("weirdPixelMonkey.png", 1200, 100);
+        f.setSize(screen_width, screen_height);
+        f.setResizable(false);
+        f.addKeyListener(this);
+        f.addMouseMotionListener(this);
+        f.addMouseListener(this);
+        placingTower = false;
+        bg = new Background("hqdefault.jpg", 0, 0);
+        dartTowerSelector = new Sprite("weirdPixelMonkey.png", 1200, 100);
 
-		// sprite instantiation
-		b = new Balloon(3);
-		b.addMouseListener(this);
+        // sprite instantiation
+        b = new Balloon(3);
+        b.addMouseListener(this);
+       
+        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
+            int r = (int) (Math.random() * 3) + 1;
+            //System.out.println(r);
+            bs.add(new Balloon(r, -75 * i, 405));
+            bs.get(i).addMouseListener(this);
+        }
 
-		for (int i = 0; i < numBalloons; i++) {
-			int r = (int) (Math.random() * 3) + 1;
-			// System.out.println(r);
-			bs.add(new Balloon(r, -75 * i, 405));
-			bs.get(i).addMouseListener(this);
-		}
+        //particles
+        particles.add(new Particle(50, 50));
 
-		// particles
-		particles.add(new Particle(50, 50));
+        // particles
+        particles.add(new Particle(50, 50));
+        balloons.add(b);
 
-		// particles
-		particles.add(new Particle(50, 50));
-		balloons.add(b);
+        f.add(this);
 
-		f.add(this);
+        // drawing timer
+        t = new Timer(17, this);
+        t.start();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+        start = System.currentTimeMillis();
+    }
 
-		// drawing timer
-		t = new Timer(17, this);
-		t.start();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true);
-		startTime = System.currentTimeMillis();
-	}
+    public void newLevel(int l){
+    	numBalloons += 5;
+    	for(int i = 0; i< numBalloons; i++) {
+    		double r = Math.random();
+    		if(r < rarity[0]) {
+        		bs.add(new Balloon(1, -75 * i, 405));
+    		}
+    		else if(r < rarity[0] + rarity[1]) {
+    			bs.add(new Balloon(2, -75 * i, 405));
+    		}
+    		else if(r< rarity[0] + rarity[1] + rarity[2]) {
+    			bs.add(new Balloon(3, -75 * i, 405));
+    		}
+    	}
+    }
+    
+    public void placeTower() {
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
+            placingTower = true;
+            // System.out.println(placingTower);
+        }
+        if (pressed && placingTower == true && mouseX < 1100) {
+            DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
+            towers.add(tower);
+            placingTower = false;
+        }
+    }
 
-	public void placeTower() {
-		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
-			placingTower = true;
-			// System.out.println(placingTower);
-		}
-		if (pressed && placingTower == true && mouseX < 1100) {
-			DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
-			towers.add(tower);
-			placingTower = false;
-		}
-	}
 
-	Timer t;
+    Timer t;
 
-	public void deleteBalloon(Balloon b) {
-		b = null;
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
 
-	@Override
-	public void keyPressed(KeyEvent e) {
+        // System.out.println("key press " + e.getKeyCode());
+        if (e.getKeyCode() == 38) {
+            //up
+            //b.moveTo(0,0);
+            if (bs.size() != 0) {
+                bs.get(0).takeDamage(1);
+                if (!bs.get(0).isAlive) {
+                    bs.remove(0);
+                }
+            }
+        }
+    }
 
-		// System.out.println("key press " + e.getKeyCode());
-		if (e.getKeyCode() == 38) {
-			// up
-			// b.moveTo(0,0);
-			if (bs.size() != 0) {
-				bs.get(0).takeDamage(1);
-				if (!bs.get(0).isAlive) {
-					bs.remove(0);
-				}
-			}
-		}
-	}
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+        //System.out.println("key press "+e.getKeyCode());
+        if (e.getKeyCode() == 38) {
+            //up
 
-		// System.out.println("key press "+e.getKeyCode());
-		if (e.getKeyCode() == 38) {
-			// up
+            // System.out.println("key press "+e.getKeyCode());
+            if (e.getKeyCode() == 38) {
+                // up
+                b.deletePath();
 
-			// System.out.println("key press "+e.getKeyCode());
-			if (e.getKeyCode() == 38) {
-				// up
-				b.deletePath();
+            }
 
-			}
+        }
+    }
 
-		}
-	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // System.out.println(e.getX() + " " + e.getY());
+        pressed = false;
+        if (e.getComponent().getClass() == Sprite.class) {
+            // System.out.println("clicked on a sprite");
+        }
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// System.out.println(e.getX() + " " + e.getY());
-		pressed = false;
-		if (e.getComponent().getClass() == Sprite.class) {
-			// System.out.println("clicked on a sprite");
-		}
+    }
 
-	}
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+    }
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-	}
+    @Override
+    public void mouseExited(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+    }
 
-	@Override
-	public void mouseExited(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-	}
+    public void reset() {
 
-	public void reset() {
+    }
 
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // System.out.println("WAY");
+        int mouseX = e.getX();
+        int mouseY = e.getY();
+        pressed = true;
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// System.out.println("WAY");
-		int mouseX = e.getX();
-		int mouseY = e.getY();
-		pressed = true;
+    }
 
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        pressed = false;
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-		pressed = false;
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        pressed = false;
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-		pressed = false;
+    }
 
-	}
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+        // TODO Auto-generated method stub
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
-		// TODO Auto-generated method stub
+    }
 
-	}
 
 }
