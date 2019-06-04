@@ -25,7 +25,11 @@ abstract class Tower {
         this.setY(y);
         setTower(new Sprite("../resources/weirdPixelMonkey.png", x, y));
     }
-
+    public Tower(int x, int y, String type) {
+        this.setX(x);
+        this.setY(y);
+        setTower(new Sprite(type, x, y));
+    }
     public void paint(Graphics g) {
         // g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
         // + anchorY, null);
@@ -37,8 +41,8 @@ abstract class Tower {
         position = p;
     }
 
-    public void setTarget(Balloon target) {
-        this.target = target;
+    public void setTarget(Balloon closestTarget) {
+        this.target = closestTarget;
     }
 
     public boolean hitsTarget() {

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
-
+	int towerType=0;
     int numBalloons = 10;
     int screen_width = 1500;
     int screen_height = 1000;
@@ -24,9 +24,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
     
     private Sprite dartTowerSelector;
+    private Sprite tackShooterSelector;
 
     private ArrayList<Particle> particles = new ArrayList<>();
-    private static ArrayList<DartTower> towers = new ArrayList<>();
+    private static ArrayList<Tower> towers = new ArrayList<>();
     private static ArrayList<Sprite> balloons = new ArrayList<>();
     private static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
     public static ArrayList<GameEffect> gameEffects = new ArrayList<>();
@@ -46,6 +47,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         super.paintComponent(g);
         bg.paint(g);
         dartTowerSelector.paint(g);
+        tackShooterSelector.paint(g);
         g.setFont(font);
 
         g.setColor(Color.RED);
@@ -185,7 +187,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         placingTower = false;
         bg = new Background("../resources/hqdefault.jpg", 0, 0);
         dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
-
+        tackShooterSelector = new Sprite("../resources/tackShooter.png",1200,700);
         // sprite instantiation
         b = new Balloon(3);
         b.addMouseListener(this);
@@ -236,12 +238,25 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     private void placeTower() {
         if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
             placingTower = true;
+            towerType=1;
             // System.out.println(placingTower);
         }
-        if (pressed && placingTower && mouseX < 1100) {
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 650 && mouseY < 850) {
+            placingTower = true;
+            towerType=2;
+            // System.out.println(placingTower);
+        }
+        if (pressed && placingTower && mouseX < 1100 && towerType==1) {
             DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
             towers.add(tower);
             placingTower = false;
+            towerType=0;
+        }
+        if (pressed && placingTower && mouseX < 1100 && towerType==2) {
+            TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
+            towers.add(tower);
+            placingTower = false;
+            towerType=0;
         }
     }
 
