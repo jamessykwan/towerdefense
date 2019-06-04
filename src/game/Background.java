@@ -1,12 +1,10 @@
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
+package game;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.net.URL;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 public class Background {
 	private int x;

@@ -1,5 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics;
+package game;
+
+import java.awt.*;
 
 
 public class Particle {

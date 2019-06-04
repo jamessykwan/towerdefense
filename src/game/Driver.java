@@ -1,7 +1,10 @@
+package game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
@@ -20,6 +23,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     private static ArrayList<DartTower> towers = new ArrayList<>();
     private static ArrayList<Sprite> balloons = new ArrayList<>();
     private static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
+    public static ArrayList<GameEffect> gameEffects = new ArrayList<>();
     private boolean placingTower;
     private boolean pressed = false;
     private int mouseX;
@@ -62,7 +66,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 //			System.out.print(b.x + " ");
         }
         // System.out.println();
-        g.drawString(("my_variable:") + attackedBalloons.size(), 0, 870);
 
         g.setFont(font2);
         g.setColor(Color.CYAN);
@@ -71,17 +74,18 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // b.paint(g);
 
         g.setColor(Color.BLACK);
-        for (Particle p : particles) {
-            p.paint(g);
-        }
+
         for (Sprite b : bs) {
-            g.drawOval(b.x, b.y, 30, 30);
+            g.drawOval((int) b.x, (int) b.y, 30, 30);
         }
         for (Tower t : towers) {
             t.paint(g);
             g.drawOval(t.getX(), t.getY(), 30, 30);
             // for debugging
             g.drawOval(t.getX() - 120, t.getY() + -100, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+        }
+        for (GameEffect gameEffect : gameEffects) {
+            gameEffect.paint(g);
         }
 
     }
@@ -105,6 +109,20 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
             }
         }
+        Iterator<GameEffect> iter = gameEffects.iterator();
+        while (iter.hasNext()) {
+            GameEffect effect = iter.next();
+            effect.move();
+            if (effect.isDone()) {
+                iter.remove();
+                //System.out.println("removed");
+            }
+        }
+       /* for (GameEffect gameEffect : gameEffects) {
+            gameEffect.move();
+
+        }
+        */
 
         for (int i = 0; i < bs.size(); i++) {
             Balloon b = bs.get(i);
@@ -126,7 +144,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             int r = (int) (Math.random() * 3) + 1;
             bs.add(new Balloon(r, 0, 405));
             start = System.currentTimeMillis();
-            System.out.println("hallehuia");
+            //System.out.println("hallehuia");
         }
         // System.out.println("move");
 
@@ -154,8 +172,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         f.addMouseMotionListener(this);
         f.addMouseListener(this);
         placingTower = false;
-        bg = new Background("hqdefault.jpg", 0, 0);
-        dartTowerSelector = new Sprite("weirdPixelMonkey.png", 1200, 100);
+        bg = new Background("../resources/hqdefault.jpg", 0, 0);
+        dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
 
         // sprite instantiation
         b = new Balloon(3);
