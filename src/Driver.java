@@ -63,7 +63,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         g.setFont(font2);
         g.setColor(Color.CYAN);
 
-        //paint sprite
+
 //		if(b.isAlive) {
 //			b.paint(g);
 //		}
@@ -71,60 +71,75 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 //			deleteBalloon(b);
 //		}
 
-        //System.out.println(bs.size());
+		//
+		// System.out.println(bs.size());
+
 
         for (Balloon b : bs) {
             if (b.isAlive) {
                 b.paint(g);
             }
+
 //			System.out.print(b.x + " ");
-        }
-        System.out.println();
-        g.drawString(("my_variable:") + Integer.toString(my_variable), 0, 870);
-        g.setFont(font2);
-        g.setColor(Color.CYAN);
+		}
+		// System.out.println();
+		g.drawString(("my_variable:") + Integer.toString(attackedBalloons.size()), 0, 870);
 
-        // paint sprite
-        b.paint(g);
+		g.setFont(font2);
+		g.setColor(Color.CYAN);
 
-        g.setColor(Color.BLACK);
-        for (Particle p : particles) {
-            p.paint(g);
-        }
-        for (Balloon b : balloons) {
-            g.drawOval(b.x, b.y, 30, 30);
-        }
-        for (Tower t : towers) {
-            t.paint(g);
-            g.drawOval(t.x, t.y, 30, 30);
-            // for debugging
-            g.drawOval(t.x - 120, t.y + -100, (int) t.attackRadius, (int) t.attackRadius);
-        }
+		// paint sprite
+		// b.paint(g);
 
+		g.setColor(Color.BLACK);
+		for (Particle p : particles) {
+			p.paint(g);
+		}
+		for (Balloon b : balloons) {
+			g.drawOval(b.x, b.y, 30, 30);
+		}
+		for (Tower t : towers) {
+			t.paint(g);
+			g.drawOval(t.x, t.y, 30, 30);
+			// for debugging
+			g.drawOval(t.x - 120, t.y + -100, (int) t.attackRadius, (int) t.attackRadius);
+		}
 
-    }
+	}
 
+	public void update() {
+		currentTime = System.currentTimeMillis() - startTime;
+		/*
+		 * if (!attackedBalloons.isEmpty()) { for(int i = 0; i< attackedBalloons.size();
+		 * i++) { attackedBalloons.get(i).takeDamage(1);
+		 * if(!attackedBalloons.get(i).isAlive) { target= null;
+		 * bs.remove(attackedBalloons.get(i));
+		 * attackedBalloons.remove(attackedBalloons.get(i)); } } }
+		 * 
+		 */
+		placeTower();
+		if (currentTime % 10 == 0) {
+			for (Tower t : towers) {
 
-    public void update() {
-        placeTower();
-        for (Tower t : towers) {
-            t.findTarget(bs);
-            Sprite target = t.getTarget();
-            if (target != null) {
-                attackedBalloons.add((Balloon) target);
-            }
-        }
-        if (!attackedBalloons.isEmpty()) {
-            for (Balloon b : attackedBalloons) {
-                b.takeDamage(1);
-            }
-        }
-        for (int i = 0; i < bs.size(); i++) {
-            Balloon b = bs.get(i);
-            b.move();
-            if (b.isFinished()) {
-                int damage = b.damage;
-                bs.remove(i);
+				t.findTarget(bs);
+				Sprite target = t.getTarget();
+				if (target != null && !attackedBalloons.contains(target)) {
+					// attackedBalloons.add((Balloon) target);
+				}
+
+			}
+		}
+
+		for (int i = 0; i < bs.size(); i++) {
+			Balloon b = bs.get(i);
+			b.move();
+			if (!b.isAlive) {
+				bs.remove(b);
+				attackedBalloons.remove(b);
+			}
+			if (b.isFinished()) {
+				int damage = b.damage;
+				bs.remove(i);
 //				System.out.println("Num Balloons " + bs.size());
                 pHealth -= damage;
             }
@@ -320,7 +335,5 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
     }
 
+
 }
-
-
-
