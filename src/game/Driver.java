@@ -8,15 +8,21 @@ import java.util.Iterator;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-    private int numBalloons = 10;
-    private Balloon b;
-    private ArrayList<Balloon> bs = new ArrayList<>();
-    private double[] rarity = {1, 0, 0};
-    private double start;
-    private Background bg;
+    int numBalloons = 10;
+    int screen_width = 1500;
+    int screen_height = 1000;
+    Balloon b;
+    ArrayList<Balloon> bs = new ArrayList<Balloon>();
+    double[] rarity = {1, 0, 0};
+    double start;
+    Background bg;
+    int level = 1;
 
-    private int pHealth = 100; //example
+    int pHealth = 100; //example
 
+    int my_variable = 0; // example
+
+    
     private Sprite dartTowerSelector;
 
     private ArrayList<Particle> particles = new ArrayList<>();
@@ -24,6 +30,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     private static ArrayList<Sprite> balloons = new ArrayList<>();
     private static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
     public static ArrayList<GameEffect> gameEffects = new ArrayList<>();
+
     private boolean placingTower;
     private boolean pressed = false;
     private int mouseX;
@@ -140,12 +147,16 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             }
         }
 
-        if (System.currentTimeMillis() - start > 1000) {
-            int r = (int) (Math.random() * 3) + 1;
-            bs.add(new Balloon(r, 0, 405));
-            start = System.currentTimeMillis();
-            //System.out.println("hallehuia");
+        if(bs.size()==0) {
+        	level++;
+        	newLevel(level);
         }
+        
+//        if(System.currentTimeMillis() - start > 1000) {
+//            int r = (int) (Math.random() * 3) + 1;
+//        	bs.add(new Balloon(r, 0, 405));
+//        	start = System.currentTimeMillis();
+//        }
         // System.out.println("move");
 
     }
@@ -178,17 +189,15 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // sprite instantiation
         b = new Balloon(3);
         b.addMouseListener(this);
-
-        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
-            int r = (int) (Math.random() * 3) + 1;
-            //System.out.println(r);
-            bs.add(new Balloon(r, -75 * i, 405));
-            bs.get(i).addMouseListener(this);
-        }
-
-        //particles
-        particles.add(new Particle(50, 50));
-
+       
+//        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
+//            int r = (int) (Math.random() * 3) + 1;
+//            //System.out.println(r);
+//            bs.add(new Balloon(r, -75 * i, 405));
+//            bs.get(i).addMouseListener(this);
+//        }
+        newLevel(level);
+        
         // particles
         particles.add(new Particle(50, 50));
         balloons.add(b);
@@ -203,18 +212,25 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         start = System.currentTimeMillis();
     }
 
-    public void newLevel(int l) {
-        numBalloons += 5;
-        for (int i = 0; i < numBalloons; i++) {
-            double r = Math.random();
-            if (r < rarity[0]) {
-                bs.add(new Balloon(1, -75 * i, 405));
-            } else if (r < rarity[0] + rarity[1]) {
-                bs.add(new Balloon(2, -75 * i, 405));
-            } else if (r < rarity[0] + rarity[1] + rarity[2]) {
-                bs.add(new Balloon(3, -75 * i, 405));
-            }
-        }
+    
+    public void newLevel(int l){
+    	for(int i = 0; i< numBalloons; i++) {
+    		double r = Math.random();
+    		if(r < rarity[0]) {
+        		bs.add(new Balloon(1, -75 * i, 405));
+    		}
+    		else if(r < rarity[0] + rarity[1]) {
+    			bs.add(new Balloon(2, -75 * i, 405));
+    		}
+    		else if(r< rarity[0] + rarity[1] + rarity[2]) {
+    			bs.add(new Balloon(3, -75 * i, 405));
+    		}
+    	}
+    	
+    	numBalloons += 5;
+    	rarity[0] -= 0.075;
+    	rarity[1] += 0.05;
+    	rarity[2] += 0.025;
     }
 
     private void placeTower() {
