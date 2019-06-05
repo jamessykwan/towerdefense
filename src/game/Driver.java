@@ -19,8 +19,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	int level = 1;
 
 	int pHealth = 100; // example
-
-	int my_variable = 0; // example
+	int WaveNumber=1;
+	int Money = 500; // example
 
 	private Sprite dartTowerSelector;
 	private Sprite tackShooterSelector;
@@ -51,6 +51,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 		g.setColor(Color.RED);
 		g.drawString(("Health:") + pHealth, 1100, 870);
+		g.drawString("Money:"+Money, 1100, 900);
+		g.drawString("Wave: "+WaveNumber, 1100, 50);
 		g.setFont(font2);
 		g.setColor(Color.CYAN);
 
@@ -112,7 +114,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 				t.findTarget(bs);
 				// attackedBalloons.add((Balloon) target);
-
 			}
 		}
 		Iterator<GameEffect> iter = gameEffects.iterator();
@@ -136,6 +137,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			if (!b.isAlive()) {
 				bs.remove(b);
 				attackedBalloons.remove(b);
+				Money+=2;
 			}
 			if (b.isFinished()) {
 				int damage = b.getDamage();
@@ -149,6 +151,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		if (bs.size() == 0) {
 			level++;
 			newLevel(level);
+			Money+=200-pHealth;
+			WaveNumber+=1;
 		}
 
 //        if(System.currentTimeMillis() - start > 1000) {
@@ -230,12 +234,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	}
 
 	private void placeTower() {
-		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213 && isValid(400,Money)) {
 			placingTower = true;
 			towerType = 1;
 			// System.out.println(placingTower);
 		}
-		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 650 && mouseY < 850) {
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 650 && mouseY < 850 && isValid(500,Money)) {
 			placingTower = true;
 			towerType = 2;
 			// System.out.println(placingTower);
@@ -245,12 +249,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			towers.add(tower);
 			placingTower = false;
 			towerType = 0;
+			Money-=400;
 		}
 		if (pressed && placingTower && mouseX < 1100 && towerType == 2) {
 			TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
 			towers.add(tower);
 			placingTower = false;
 			towerType = 0;
+			Money-=500;
 		}
 	}
 
@@ -265,6 +271,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 				bs.get(0).takeDamage(1);
 				if (!bs.get(0).isAlive()) {
 					bs.remove(0);
+
 				}
 			}
 		}
@@ -344,6 +351,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		mouseY = e.getY();
 		// TODO Auto-generated method stub
 
+	}
+	public boolean isValid(int price, int money) {
+		if(price>money)return false;
+		return true;
 	}
 
 }
