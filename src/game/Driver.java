@@ -11,6 +11,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	int numBalloons = 10;
 	int screen_width = 1500;
 	int screen_height = 1000;
+	String selected="";
 	Balloon b;
 	ArrayList<Balloon> bs = new ArrayList<Balloon>();
 	double[] rarity = { 1, 0, 0 };
@@ -51,8 +52,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 		g.setColor(Color.RED);
 		g.drawString(("Health:") + pHealth, 1100, 870);
-		g.drawString("Money:"+Money, 1100, 900);
+		g.drawString("Money:"+Money, 1100, 910);
 		g.drawString("Wave: "+WaveNumber, 1100, 50);
+		g.drawString(selected, 1100, 950);
 		g.setFont(font2);
 		g.setColor(Color.CYAN);
 
@@ -237,12 +239,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213 && isValid(400,Money)) {
 			placingTower = true;
 			towerType = 1;
-			// System.out.println(placingTower);
+			selected="Dart Monkey";
+			//System.out.println(selected);
 		}
 		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 650 && mouseY < 850 && isValid(500,Money)) {
 			placingTower = true;
 			towerType = 2;
 			// System.out.println(placingTower);
+			selected="Tack Shooter";
 		}
 		if (pressed && placingTower && mouseX < 1100 && towerType == 1) {
 			DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
@@ -250,6 +254,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			placingTower = false;
 			towerType = 0;
 			Money-=400;
+			selected="";
 		}
 		if (pressed && placingTower && mouseX < 1100 && towerType == 2) {
 			TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
@@ -257,6 +262,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			placingTower = false;
 			towerType = 0;
 			Money-=500;
+			selected="";
 		}
 	}
 
