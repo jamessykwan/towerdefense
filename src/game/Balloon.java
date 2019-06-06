@@ -67,7 +67,7 @@ public class Balloon extends Sprite {
      * subtracts from the balloon's health until health is less than zero. Then
      * calls spawnNew()
      */
-    void takeDamage(int damage) {
+    public void takeDamage(int damage) {
         setHealth(getHealth() - damage);
         if (getHealth() <= 0) {
             spawnNew();
@@ -123,25 +123,25 @@ public class Balloon extends Sprite {
             int x1 = c.x;
             int y1 = c.y;
 
-            if (Math.abs(x1 - x) > getSpeed() || Math.abs(y1 - y) > getSpeed()) {
+            if (Math.abs(x1 - getX()) > getSpeed() || Math.abs(y1 - getY()) > getSpeed()) {
 
-                if (this.x > x1 && Math.abs(x1 - x) > getSpeed()) {
+                if (this.getX() > x1 && Math.abs(x1 - getX()) > getSpeed()) {
                     tx.translate(-getSpeed(), 0);
-                    x = (int) tx.getTranslateX();
-                } else if (this.x < x1 && Math.abs(x1 - x) > getSpeed()) {
+                    setX((int) tx.getTranslateX());
+                } else if (this.getX() < x1 && Math.abs(x1 - getX()) > getSpeed()) {
                     //this.x += speed;
                     tx.translate(getSpeed(), 0);
-                    x = (int) tx.getTranslateX();
+                    setX((int) tx.getTranslateX());
 
 
-                } else if (this.y > y1 && Math.abs(y1 - y) > getSpeed()) {
+                } else if (this.getY() > y1 && Math.abs(y1 - getY()) > getSpeed()) {
                     //vx = 0;
                     tx.translate(0, -getSpeed());
-                    y = (int) tx.getTranslateY();
-                } else if (this.y < y1 && Math.abs(y1 - y) > getSpeed()) {
+                    setY((int) tx.getTranslateY());
+                } else if (this.getY() < y1 && Math.abs(y1 - getY()) > getSpeed()) {
                     //vx = 0;
                     tx.translate(0, getSpeed());
-                    y = (int) tx.getTranslateY();
+                    setY((int) tx.getTranslateY());
 
 
                 }

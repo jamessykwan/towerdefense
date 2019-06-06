@@ -19,23 +19,23 @@ abstract class Tower {
     private int y;
     private Balloon target;
     private boolean withinRange;
-    private int cooldown;
+    private double cooldown;
 
     public Tower(int x, int y) {
         this.setX(x);
         this.setY(y);
-        setTower(new Sprite("../resources/weirdPixelMonkey.png", x, y));
+        setTower(new Sprite("../resources/Dart_Monkey.png", x, y));
     }
     public Tower(int x, int y, String type) {
         this.setX(x);
         this.setY(y);
         setTower(new Sprite(type, x, y));
     }
-    public int getCooldown() {
+    public double getCooldown() {
     	return cooldown;
     }
-    public void setCooldown(int c) {
-    	cooldown=c;
+    public void setCooldown(double d) {
+    	cooldown=d;
     }
     public void paint(Graphics g) {
         // g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
@@ -67,8 +67,8 @@ abstract class Tower {
         double closestDist = 0.0;
         Balloon closestTarget = null;
         for (Balloon t : sprites) {
-            double distanceX = t.x + 10 - this.getX();
-            double distanceY = t.y + 10 - this.getY();
+            double distanceX = t.getX() + 10 - this.getX();
+            double distanceY = t.getY() + 10 - this.getY();
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
             //System.out.println(distance);
             if (Double.compare(distance, getAttackRadius()) > 0) {
@@ -84,7 +84,7 @@ abstract class Tower {
         }
         setTarget(closestTarget);
         if (closestTarget != null) {
-            Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.x, (int) closestTarget.y));
+            Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.getX(), (int) closestTarget.getY()));
             Driver.gameEffects.add(dart);
             closestTarget.takeDamage(1);
             setTarget(null);

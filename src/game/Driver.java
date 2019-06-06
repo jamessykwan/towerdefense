@@ -38,6 +38,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	private int mouseY;
 	Tower tempTower;
 	private double startTime;
+	private double currentTime;
 
 	// fonts
 	private Font font = new Font("Courier New", Font.BOLD, 50);
@@ -86,7 +87,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		g.setColor(Color.BLACK);
 
 		for (Sprite b : bs) {
-			g.drawOval((int) b.x, (int) b.y, 30, 30);
+			g.drawOval((int) b.getX(), (int) b.getY(), 30, 30);
 		}
 		for (Tower t : towers) {
 			t.paint(g);
@@ -101,7 +102,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	}
 
 	private void update() {
-		double currentTime = System.currentTimeMillis() - startTime;
 		/*
 		 * if (!attackedBalloons.isEmpty()) { for(int i = 0; i< attackedBalloons.size();
 		 * i++) { attackedBalloons.get(i).takeDamage(1);
@@ -110,19 +110,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		 * attackedBalloons.remove(attackedBalloons.get(i)); } } }
 		 *
 		 */
-		placeTower();
-		//if (currentTime % 10 == 0) {
-			for (Tower t : towers) {
-				if(t.getCooldown()<=0) {
-					t.findTarget(bs);
-					t.setCooldown(150);
-				}
-				else {
-					t.setCooldown(t.getCooldown()-1);
-				}
-				// attackedBalloons.add((Balloon) target);
-			}
-		//}
+		
 		Iterator<GameEffect> iter = gameEffects.iterator();
 		while (iter.hasNext()) {
 			GameEffect effect = iter.next();
@@ -132,6 +120,21 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 				// System.out.println("removed");
 			}
 		}
+		
+		placeTower();
+		//if (currentTime % 10 == 0) {
+			for (Tower t : towers) {
+				if(t.getCooldown()<=0) {
+					t.findTarget(bs);
+					t.setCooldown(50);
+				}
+				else {
+					t.setCooldown((int)t.getCooldown()-(System.currentTimeMillis()- currentTime)/10);
+				}
+				// attackedBalloons.add((Balloon) target);
+			}
+		//}
+		
 		/*
 		 * for (GameEffect gameEffect : gameEffects) { gameEffect.move();
 		 * 
@@ -168,6 +171,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 //        	start = System.currentTimeMillis();
 //        }
 		// System.out.println("move");
+		currentTime = System.currentTimeMillis() - startTime;
+
 
 	}
 
@@ -194,8 +199,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		f.addMouseListener(this);
 		placingTower = false;
 		bg = new Background("../resources/hqdefault.jpg", 0, 0);
-		dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
-		tackShooterSelector = new Sprite("../resources/tackShooter.png", 1200, 700);
+		dartTowerSelector = new Sprite("../resources/Dart_Monkey.png", 1200, 100);
+		tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 700);
 		// sprite instantiation
 		b = new Balloon(3);
 		b.addMouseListener(this);
@@ -215,7 +220,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		f.add(this);
 
 		// drawing timer
-		Timer t = new Timer(17, this);
+		Timer t = new Timer(5, this);
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);

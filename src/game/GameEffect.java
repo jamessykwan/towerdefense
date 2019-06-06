@@ -5,12 +5,13 @@ import java.util.ArrayList;
 
 public abstract class GameEffect {
 
-	private Sprite effect;
-	private int x;
-	private int y;
-	private double velX;
-	private double velY;
-	private double age;
+	protected Sprite effect;
+	protected int x;
+	protected int y;
+	protected double velX;
+	protected double velY;
+	protected double age;
+	protected boolean isDone;
 
 	public Sprite getEffect() {
 		return effect;
@@ -63,18 +64,18 @@ public abstract class GameEffect {
 	public void move(ArrayList<Balloon> enemies) {
 		age += .09;
 		effect.tx.translate(velX / 25, velY / 25);
-		effect.x = effect.tx.getTranslateX();
-		effect.y = effect.tx.getTranslateY();
+		effect.setX(effect.tx.getTranslateX());
+		effect.setY(effect.tx.getTranslateY());
 		// System.out.println("x: " + effect.x + " y: " + effect.y + " velX: " + velX +
 		// " velY: " + velY);
 		for (Balloon enemy : enemies) {
-			double distanceX = enemy.x + 10 - x;
-			double distanceY = enemy.y + 10 - y;
+			double distanceX = enemy.getX() + 10 - x;
+			double distanceY = enemy.getY() + 10 - y;
 			double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) ;
 			// System.out.println(distance);
-			if (Double.compare(distance, 100) < 0) {
+			if (Double.compare(distance, 60) < 0) {
 				enemy.takeDamage(1);
-				setAge(.6);
+				isDone = true;
 			}
 		}
 	}
@@ -84,6 +85,6 @@ public abstract class GameEffect {
 	}
 
 	public boolean isDone() {
-		return age >= 1;
+		return isDone || age >= 1;
 	}
 }
