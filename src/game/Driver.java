@@ -26,7 +26,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	private Sprite dartTowerSelector;
 	private Sprite tackShooterSelector;
 
-	private ArrayList<Particle> particles = new ArrayList<>();
+	//private ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Tower> towers = new ArrayList<>();
 	private static ArrayList<Sprite> balloons = new ArrayList<>();
 	private static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
@@ -111,13 +111,18 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		 *
 		 */
 		placeTower();
-		if (currentTime % 10 == 0) {
+		//if (currentTime % 10 == 0) {
 			for (Tower t : towers) {
-
-				t.findTarget(bs);
+				if(t.getCooldown()<=0) {
+					t.findTarget(bs);
+					t.setCooldown(150);
+				}
+				else {
+					t.setCooldown(t.getCooldown()-1);
+				}
 				// attackedBalloons.add((Balloon) target);
 			}
-		}
+		//}
 		Iterator<GameEffect> iter = gameEffects.iterator();
 		while (iter.hasNext()) {
 			GameEffect effect = iter.next();
@@ -204,7 +209,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		newLevel(level);
 
 		// particles
-		particles.add(new Particle(50, 50));
+		//particles.add(new Particle(50, 50));
 		balloons.add(b);
 
 		f.add(this);

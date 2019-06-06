@@ -19,6 +19,7 @@ abstract class Tower {
     private int y;
     private Balloon target;
     private boolean withinRange;
+    private int cooldown;
 
     public Tower(int x, int y) {
         this.setX(x);
@@ -29,6 +30,12 @@ abstract class Tower {
         this.setX(x);
         this.setY(y);
         setTower(new Sprite(type, x, y));
+    }
+    public int getCooldown() {
+    	return cooldown;
+    }
+    public void setCooldown(int c) {
+    	cooldown=c;
     }
     public void paint(Graphics g) {
         // g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
