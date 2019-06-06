@@ -80,6 +80,10 @@ abstract class Tower {
         }
     }
 
+    public boolean checkPos() {
+		return false;
+    }
+    
     public void attack(Sprite target) {
     }
 

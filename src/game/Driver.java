@@ -1,8 +1,12 @@
 package game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -11,9 +15,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     int numBalloons = 10;
     int screen_width = 1500;
     int screen_height = 1000;
-    Balloon b;
+    Blimp b;
     ArrayList<Balloon> bs = new ArrayList<Balloon>();
-    double[] rarity = {1, 0, 0};
+    double[] rarity = {1./4., 1./4., 1./4., 1/4.};
     double start;
     Background bg;
     int level = 1;
@@ -53,32 +57,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         g.setFont(font2);
         g.setColor(Color.CYAN);
 
-
-//		if(b.isAlive) {
-//			b.paint(g);
-//		}
-//		else {
-//			deleteBalloon(b);
-//		}
-
-        //
-        // System.out.println(bs.size());
-
-
         for (Balloon b : bs) {
             if (b.isAlive()) {
                 b.paint(g);
             }
-
-//			System.out.print(b.x + " ");
         }
-        // System.out.println();
-
+        b.paint(g);
         g.setFont(font2);
         g.setColor(Color.CYAN);
-
-        // paint sprite
-        // b.paint(g);
 
         g.setColor(Color.BLACK);
 
@@ -130,7 +116,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
         }
         */
-
+        b.move();
+        
         for (int i = 0; i < bs.size(); i++) {
             Balloon b = bs.get(i);
             b.move();
@@ -187,7 +174,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
 
         // sprite instantiation
-        b = new Balloon(3);
+        b = new Blimp(2, 0, 405);
         b.addMouseListener(this);
        
 //        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
@@ -216,21 +203,20 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     public void newLevel(int l){
     	for(int i = 0; i< numBalloons; i++) {
     		double r = Math.random();
-    		if(r < rarity[0]) {
-        		bs.add(new Balloon(1, -75 * i, 405));
-    		}
-    		else if(r < rarity[0] + rarity[1]) {
-    			bs.add(new Balloon(2, -75 * i, 405));
-    		}
-    		else if(r< rarity[0] + rarity[1] + rarity[2]) {
-    			bs.add(new Balloon(3, -75 * i, 405));
+    		double percent = 0;
+    		for(int j = 0; j < rarity.length; j++) {
+    			percent += rarity[j];
+    			if(r < percent) {
+    				bs.add(new Balloon(j+1, -75 * i, 405));
+        			j += rarity.length;
+    			}
     		}
     	}
     	
     	numBalloons += 5;
-    	rarity[0] -= 0.075;
-    	rarity[1] += 0.05;
-    	rarity[2] += 0.025;
+//    	rarity[0] -= 0.075;
+//    	rarity[1] += 0.05;
+//    	rarity[2] += 0.025;
     }
 
     private void placeTower() {
@@ -291,7 +277,19 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // System.out.println(e.getX() + " " + e.getY());
         pressed = false;
         e.getComponent();// System.out.println("clicked on a sprite");
-
+        BufferedImage img = null;
+        File f = new File("../resources/hqdefault.jpg");
+        try {
+			img = ImageIO.read(f);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        
+        int p = img.getRGB(e.getX(), e.getY());
+        int r = (p>>16) & 0xff;
+        int g = (p>>8) & 0xff;
+        int b = p & 0xff;
+        System.out.println("red: " + r + " greeen: " + g + " blue: " + b);
     }
 
     @Override
