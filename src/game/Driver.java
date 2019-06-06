@@ -18,7 +18,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	double start;
 	Background bg;
 	int level = 1;
-
+	Sprite cursorTracker=new Sprite("../resources/weirdPixelMonkey.png", 1500, 100);
+	
 	int pHealth = 100; // example
 	int WaveNumber=1;
 	int Money = 500; // example
@@ -48,13 +49,15 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		bg.paint(g);
 		dartTowerSelector.paint(g);
 		tackShooterSelector.paint(g);
+		cursorTracker.paint(g);
 		g.setFont(font);
 
 		g.setColor(Color.RED);
 		g.drawString(("Health:") + pHealth, 1100, 870);
 		g.drawString("Money:"+Money, 1100, 910);
 		g.drawString("Wave: "+WaveNumber, 1100, 50);
-		g.drawString(selected, 1100, 950);
+		g.drawString(selected, 1000, 950);
+		//g.drawString("Dart Tower"), arg1, arg2);
 		g.setFont(font2);
 		g.setColor(Color.CYAN);
 
@@ -110,6 +113,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		 * attackedBalloons.remove(attackedBalloons.get(i)); } } }
 		 *
 		 */
+		if(placingTower) {
+			cursorTracker.setx(mouseX-20);
+			cursorTracker.sety(mouseY-75);
+		}
+		else {
+			cursorTracker.setx(5000);
+		}
 		placeTower();
 		//if (currentTime % 10 == 0) {
 			for (Tower t : towers) {
@@ -194,8 +204,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		f.addMouseListener(this);
 		placingTower = false;
 		bg = new Background("../resources/hqdefault.jpg", 0, 0);
+
 		dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
-		tackShooterSelector = new Sprite("../resources/tackShooter.png", 1200, 700);
+		tackShooterSelector = new Sprite("../resources/tackShooter.png", 1180, 200);
 		// sprite instantiation
 		b = new Balloon(3);
 		b.addMouseListener(this);
@@ -241,33 +252,58 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	}
 
 	private void placeTower() {
-		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213 && isValid(400,Money)) {
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 225) {
 			placingTower = true;
 			towerType = 1;
-			selected="Dart Monkey";
+			selected="Dart Monkey 100";
+			cursorTracker=new Sprite("../resources/weirdPixelMonkey.png",mouseX-20,mouseY-75);
 			//System.out.println(selected);
 		}
-		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 650 && mouseY < 850 && isValid(500,Money)) {
+		/*else if(!isValid(100, Money)) {
+			selected="Not Enough Money";
+		}*/
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 225 && mouseY < 325) {
 			placingTower = true;
 			towerType = 2;
 			// System.out.println(placingTower);
-			selected="Tack Shooter";
+			selected="Tack Shooter 500";
+			cursorTracker=new Sprite("../resources/tackShooter.png",mouseX-20,mouseY-75);
 		}
+		/*else if(!isValid(500, Money)) {
+			selected="Not Enough Money";
+		}*/
+		/*if(pressed&&placingTower&&mouseX>1200) {
+			placingTower=false;
+			towerType=0;
+			selected="";
+		}*/
 		if (pressed && placingTower && mouseX < 1100 && towerType == 1) {
+			if(isValid(100,Money)) {
 			DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
 			towers.add(tower);
 			placingTower = false;
 			towerType = 0;
-			Money-=400;
-			selected="";
+			Money-=100;
+			selected="";}
+			else {
+				placingTower=false;
+				towerType=0;
+				selected="Not Enough Money";
+			}
 		}
 		if (pressed && placingTower && mouseX < 1100 && towerType == 2) {
+			if(isValid(500,Money)) {
 			TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
 			towers.add(tower);
 			placingTower = false;
 			towerType = 0;
 			Money-=500;
-			selected="";
+			selected="";}
+			else {
+				placingTower = false;
+				towerType=0;
+				selected="Not Enough Money";
+			}
 		}
 	}
 
