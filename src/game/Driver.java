@@ -22,11 +22,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	int pHealth = 100; // example
 	int WaveNumber = 1;
-	int Money = 500; // example
+	int Money = 5000; // example
 
 	private Sprite dartTowerSelector;
 	private Sprite tackShooterSelector;
-
+	private Sprite superMonkeySelector;
 	// private ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Tower> towers = new ArrayList<>();
 	private static ArrayList<Sprite> balloons = new ArrayList<>();
@@ -50,6 +50,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		bg.paint(g);
 		dartTowerSelector.paint(g);
 		tackShooterSelector.paint(g);
+		superMonkeySelector.paint(g);
 		cursorTracker.paint(g);
 		g.setFont(font);
 
@@ -96,7 +97,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			t.paint(g);
 			g.drawOval(t.getX(), t.getY(), 30, 30);
 			// for debugging
-			g.drawOval(t.getX() - 120, t.getY() + -100, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+			if(t.getCost()==100 || t.getCost()==500) {
+				g.drawOval(t.getX() - 120, t.getY() + -100, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+			}
+			if(t.getCost()==2000) {
+				g.drawOval(t.getX() - 350, t.getY() + -350, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+			}
 		}
 		for (GameEffect gameEffect : gameEffects) {
 			gameEffect.paint(g);
@@ -123,7 +129,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		placeTower();
 		// if (currentTime % 10 == 0) {
 		for (Tower t : towers) {
-			if (t.getCooldown() <= 0) {
+			if(t.getCost()>=2000 && t.getCooldown()<=0) {
+				t.setCooldown(10);
+				t.findTarget(bs);
+			}
+			else if (t.getCooldown() <= 0) {
 				t.findTarget(bs);
 				t.setCooldown(150);
 			} else {
@@ -219,8 +229,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		placingTower = false;
 		bg = new Background("../resources/hqdefault.jpg", 0, 0);
 		dartTowerSelector = new Sprite("../resources/Dart_Monkey.png", 1200, 100);
-		tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 700);
-
+		tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 200);
+		superMonkeySelector = new Sprite("../resources/Super_Monkey.png",1200,300);
 		// sprite instantiation
 		b = new Balloon(3);
 		b.addMouseListener(this);
@@ -267,58 +277,80 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	private void placeTower() {
 		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 225) {
-			placingTower = true;
-			towerType = 1;
-			selected = "Dart Monkey 100";
-			cursorTracker = new Sprite("../resources/Dart_Monkey.png", mouseX - 20, mouseY - 75);
-			// System.out.println(selected);
+		placingTower = true;
+		towerType = 1;
+		selected="Dart Monkey 100";
+		cursorTracker=new Sprite("../resources/weirdPixelMonkey.png",mouseX-20,mouseY-75);
+		//System.out.println(selected);
 		}
-		/*
-		 * else if(!isValid(100, Money)) { selected="Not Enough Money"; }
-		 */
+		/*else if(!isValid(100, Money)) {
+		selected="Not Enough Money";
+		}*/
 		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 225 && mouseY < 325) {
-			placingTower = true;
-			towerType = 2;
-			// System.out.println(placingTower);
-			selected = "Tack Shooter 500";
-			cursorTracker = new Sprite("../resources/Tack_Shooter.png", mouseX - 20, mouseY - 75);
+		placingTower = true;
+		towerType = 2;
+		// System.out.println(placingTower);
+		selected="Tack Shooter 500";
+		cursorTracker=new Sprite("../resources/tackShooter.png",mouseX-20,mouseY-75);
 		}
-		/*
-		 * else if(!isValid(500, Money)) { selected="Not Enough Money"; }
-		 */
-		/*
-		 * if(pressed&&placingTower&&mouseX>1200) { placingTower=false; towerType=0;
-		 * selected=""; }
-		 */
+		if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 325 && mouseY < 425) {
+		placingTower = true;
+		towerType = 3;
+		// System.out.println(placingTower);
+		selected="Super Monkey 2000";
+		cursorTracker=new Sprite("../resources/superMonkey.png",mouseX-20,mouseY-75);
+		}
+		/*else if(!isValid(500, Money)) {
+		selected="Not Enough Money";
+		}*/
+		/*if(pressed&&placingTower&&mouseX>1200) {
+		placingTower=false;
+		towerType=0;
+		selected="";
+		}*/
 		if (pressed && placingTower && mouseX < 1100 && towerType == 1) {
-			if (isValid(100, Money)) {
-				DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
-				towers.add(tower);
-				placingTower = false;
-				towerType = 0;
-				Money -= 100;
-				selected = "";
-			} else {
-				placingTower = false;
-				towerType = 0;
-				selected = "Not Enough Money";
-			}
+		if(isValid(100,Money)) {
+		DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
+		towers.add(tower);
+		placingTower = false;
+		towerType = 0;
+		Money-=100;
+		selected="";}
+		else {
+		placingTower=false;
+		towerType=0;
+		selected="Not Enough Money";
+		}
 		}
 		if (pressed && placingTower && mouseX < 1100 && towerType == 2) {
-			if (isValid(500, Money)) {
-				TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
-				towers.add(tower);
-				placingTower = false;
-				towerType = 0;
-				Money -= 500;
-				selected = "";
-			} else {
-				placingTower = false;
-				towerType = 0;
-				selected = "Not Enough Money";
-			}
+		if(isValid(500,Money)) {
+		TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
+		towers.add(tower);
+		placingTower = false;
+		towerType = 0;
+		Money-=500;
+		selected="";}
+		else {
+		placingTower = false;
+		towerType=0;
+		selected="Not Enough Money";
 		}
-	}
+		}
+		if (pressed && placingTower && mouseX < 1100 && towerType == 3) {
+		if(isValid(2000,Money)) {
+		SuperMonkey tower = new SuperMonkey(mouseX - 20, mouseY - 75);
+		towers.add(tower);
+		placingTower = false;
+		towerType = 0;
+		Money-=2000;
+		selected="";}
+		else {
+		placingTower = false;
+		towerType=0;
+		selected="Not Enough Money";
+		}
+		}
+		}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
