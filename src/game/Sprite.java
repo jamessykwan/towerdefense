@@ -44,14 +44,17 @@ public class Sprite extends JButton {
     public int gety() {
         return (int) tx.getTranslateY();
     }
+
     public void sety(int a) {
-    	y=a;
+        y = a;
     }
+
     public int getx() {
         return (int) tx.getTranslateX();
     }
+
     public void setx(int a) {
-    	x=a;
+        x = a;
     }
 
     public void rotateCW() {
@@ -85,22 +88,22 @@ public class Sprite extends JButton {
     }
 
 
-	public int getX() {
-		return (int) x;
-	}
+    public int getX() {
+        return (int) x;
+    }
 
 
-	public void setX(double x) {
-		this.x = x;
-	}
+    public void setX(double x) {
+        this.x = x;
+    }
 
 
-	public int getY() {
-		return (int) y;
-	}
+    public int getY() {
+        return (int) y;
+    }
 
 
-	public void setY(double y) {
-		this.y = y;
-	}
+    public void setY(double y) {
+        this.y = y;
+    }
 }

@@ -7,38 +7,38 @@ import java.io.File;
 import java.net.URL;
 
 public class Background {
-	private int x;
-	private int y;
-	Image img;
-	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
+    private int x;
+    private int y;
+    Image img;
+    private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
-	// drawing affinetransform in background
-	public Background(String filename, int x, int y) {
-		String src = new File("").getAbsolutePath() + "/src/";
-		ImageIcon ast = new ImageIcon(src + filename);
-		this.x = x;
-		this.y = y;
-		img = getImage(filename);
+    // drawing affinetransform in background
+    public Background(String filename, int x, int y) {
+        String src = new File("").getAbsolutePath() + "/src/";
+        ImageIcon ast = new ImageIcon(src + filename);
+        this.x = x;
+        this.y = y;
+        img = getImage(filename);
 
-	}
+    }
 
-	public void move() {
-	}
+    public void move() {
+    }
 
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(img, tx, null);
-	}
+    public void paint(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(img, tx, null);
+    }
 
-	private Image getImage(String path) {
-		Image tempImage = null;
-		try {
-			URL imageURL = Background.class.getResource(path);
-			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return tempImage;
-	}
+    private Image getImage(String path) {
+        Image tempImage = null;
+        try {
+            URL imageURL = Background.class.getResource(path);
+            tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tempImage;
+    }
 
 }
