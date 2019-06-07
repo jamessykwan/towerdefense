@@ -34,6 +34,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     private Sprite dartTowerSelector;
     private Sprite tackShooterSelector;
     private Sprite superMonkeySelector;
+    private Sprite sniperMonkeySelector;
     // private ArrayList<Particle> particles = new ArrayList<>();
     private static ArrayList<Tower> towers = new ArrayList<>();
     private static ArrayList<Sprite> balloons = new ArrayList<>();
@@ -58,6 +59,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         dartTowerSelector.paint(g);
         tackShooterSelector.paint(g);
         superMonkeySelector.paint(g);
+        sniperMonkeySelector.paint(g);
         cursorTracker.paint(g);
         g.setFont(font);
 
@@ -124,8 +126,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
                 t.setCooldown(10);
                 t.findTarget(bs);
                 t.update(t.getTarget());
-
-            } else if (t.getCooldown() <= 0) {
+            }
+            else if (t.getCooldown()<=0&&t.getCost()==150) {
+            	t.findTarget(bs);
+            	t.update(t.getTarget());
+            	t.setCooldown(500);
+            }
+            else if (t.getCooldown() <= 0) {
                 t.findTarget(bs);
                 t.update(t.getTarget());
                 t.setCooldown(30);
@@ -235,7 +242,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         dartTowerSelector = new Sprite("../resources/Dart_Monkey.png", 1200, 100);
         tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 200);
         superMonkeySelector = new Sprite("../resources/Super_Monkey.png", 1200, 300);
- 
+        sniperMonkeySelector = new Sprite("../resources/Sniper_Monkey.png", 1200, 400);
+        
         newLevel(level);
         f.add(this);
 
@@ -313,6 +321,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             selected = "Super Monkey 2000";
             cursorTracker = new Sprite("../resources/Super_Monkey.png", mouseX - 20, mouseY - 75);
         }
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 425 && mouseY < 525) {
+            placingTower = true;
+            towerType = 4;
+            // System.out.println(placingTower);
+            selected = "Sniper Monkey 150";
+            cursorTracker = new Sprite("../resources/Sniper_Monkey.png", mouseX - 20, mouseY - 75);
+        }
 		/*else if(!isValid(500, Money)) {
 		selected="Not Enough Money";
 		}*/
@@ -356,6 +371,20 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
                 placingTower = false;
                 towerType = 0;
                 Money -= 2000;
+                selected = "";
+            } else {
+                placingTower = false;
+                towerType = 0;
+                selected = "Not Enough Money";
+            }
+        }
+        if (pressed && placingTower && mouseX < 1100 && towerType == 4) {
+            if (isValid(150, Money)) {
+                SniperMonkey tower = new SniperMonkey(mouseX - 20, mouseY - 75);
+                towers.add(tower);
+                placingTower = false;
+                towerType = 0;
+                Money -= 150;
                 selected = "";
             } else {
                 placingTower = false;
