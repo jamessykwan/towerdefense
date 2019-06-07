@@ -9,6 +9,7 @@ public class Balloon extends Sprite {
     private int speed;
     private int tier;
     private boolean isAlive;
+    private boolean isBlimp = false;
     private ArrayList<Coordinate> path = new ArrayList<>();
 
     public Balloon(String filename) {
@@ -18,22 +19,22 @@ public class Balloon extends Sprite {
         setAlive(true);
     }
 
-    Balloon(int tier) {
+    public Balloon(int tier) {
 
         super(updateImage(tier));
         this.setTier(tier);
-        setHealth(tier);
+        setHealth(1);
         setDamage(tier);
         setAlive(true);
         setSpeed((int) 1.2 * tier);
         createPath();
     }
 
-    Balloon(int tier, int xpos, int ypos) {
+    public Balloon(int tier, int xpos, int ypos) {
 
         super(updateImage(tier), xpos, ypos);
         this.setTier(tier);
-        setHealth(tier);
+        setHealth(1);
         setDamage(tier);
         setAlive(true);
         setSpeed((int) 1.2 * tier);
@@ -41,7 +42,7 @@ public class Balloon extends Sprite {
     }
 
 
-    private void createPath() {
+    public void createPath() {
         getPath().add(new Coordinate(156, 405));
         getPath().add(new Coordinate(156, 140));
         getPath().add(new Coordinate(410, 140));
@@ -59,7 +60,7 @@ public class Balloon extends Sprite {
     }
 
 
-    void deletePath() {
+    public void deletePath() {
         getPath().clear();
     }
 
@@ -70,7 +71,7 @@ public class Balloon extends Sprite {
     public void takeDamage(int damage) {
         setHealth(getHealth() - damage);
         if (getHealth() <= 0) {
-            spawnNew();
+            spawnNew();  
         }
     }
 
@@ -79,12 +80,12 @@ public class Balloon extends Sprite {
      * Once it goes down a tier, the traits of the balloon are reset to the new
      * tier's values.
      */
-    private void spawnNew() {
+    public void spawnNew() {
         if (getTier() > 1) {
             setTier(getTier() - 1);
-            setHealth(getTier());
+            setHealth(1);
             setDamage(getTier());
-            setSpeed(2 * getTier());
+            setSpeed((int) (1.2 * getTier()));
             img = getImage(updateImage(getTier())); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
         } else {
             setAlive(false);
@@ -94,21 +95,23 @@ public class Balloon extends Sprite {
     /*
      * Switches the image of the balloon based on its tier
      */
-    private static String updateImage(int tier) {
+    public static String updateImage(int tier) {
         if (tier == 3) {
             return "../resources/greenBalloon.png";
         } else if (tier == 2) {
             return "../resources/blueBalloon.png";
         } else if (tier == 1) {
             return "../resources/redBalloon.png";
+        } else if (tier == 4){
+        	return "../resources/whiteBalloon.png";
         } else {
             return null;
         }
 
     }
 
-    boolean isFinished() {
-        return (getPath().size() == 0);
+    public boolean isFinished() {
+        return (getPath().size() == 0 || tx.getTranslateY() < -75);
     }
 
 
@@ -153,7 +156,7 @@ public class Balloon extends Sprite {
 
         }
     }
-
+    
     public int getHealth() {
         return health;
     }
@@ -200,5 +203,13 @@ public class Balloon extends Sprite {
 
     public void setPath(ArrayList<Coordinate> path) {
         this.path = path;
+    }
+    
+    public boolean isBlimp() {
+		return isBlimp;
+    }
+    
+    public void setBlimp(boolean b) {
+    	isBlimp = b;
     }
 }

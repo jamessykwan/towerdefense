@@ -1,20 +1,27 @@
 package game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
+
     int towerType = 0;
     int numBalloons = 10;
     int screen_width = 1500;
     int screen_height = 1000;
     String selected = "";
     Balloon b;
+
     ArrayList<Balloon> bs = new ArrayList<Balloon>();
-    double[] rarity = {1, 0, 0};
+    ArrayList<Blimp> bigBS = new ArrayList<Blimp>();
+    double[] rarity = {0, 0, 0, 0, 1};
     double start;
     Background bg;
     int level = 1;
@@ -63,30 +70,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         g.setFont(font2);
         g.setColor(Color.CYAN);
 
-//		if(b.isAlive) {
-//			b.paint(g);
-//		}
-//		else {
-//			deleteBalloon(b);
-//		}
-
-        //
-        // System.out.println(bs.size());
-
         for (Balloon b : bs) {
             if (b.isAlive()) {
                 b.paint(g);
             }
-
-//			System.out.print(b.x + " ");
         }
-        // System.out.println();
 
         g.setFont(font2);
         g.setColor(Color.CYAN);
-
-        // paint sprite
-        // b.paint(g);
 
         g.setColor(Color.BLACK);
 
@@ -166,28 +157,35 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             }
             // attackedBalloons.add((Balloon) target);
         }
-        // }
 
-        /*
-         * for (GameEffect gameEffect : gameEffects) { gameEffect.move();
-         *
-         * }
-         */
-
-
+        */
+       
         for (int i = 0; i < bs.size(); i++) {
-            Balloon b = bs.get(i);
-            b.move();
-            if (!b.isAlive()) {
-                bs.remove(b);
-                attackedBalloons.remove(b);
-                Money += 2;
+            Balloon b;
+            if(bs.get(i).getClass() == Balloon.class) {
+            	b = bs.get(i);
+            	if (!b.isAlive()) {
+                	bs.remove(b);
+                    attackedBalloons.remove(b);
+                  Money+=2;
+                }
+            } else {
+            	b = (Blimp) bs.get(i);
+        		if (!b.isAlive()) {
+                	newBalloon((Blimp) b);
+                	bs.remove(b);
+                  attackedBalloons.remove(b);
+                  Money += 50;
+                }
+
             }
+            b.move();
+            
+            System.out.println();
             if (b.isFinished()) {
                 int damage = b.getDamage();
                 bs.remove(i);
                 i--;
-//				System.out.println("Num Balloons " + bs.size());
                 pHealth -= damage;
             }
         }
@@ -199,6 +197,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             WaveNumber += 1;
         }
 
+
 //        if(System.currentTimeMillis() - start > 1000) {
 //            int r = (int) (Math.random() * 3) + 1;
 //        	bs.add(new Balloon(r, 0, 405));
@@ -206,6 +205,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 //        }
         // System.out.println("move");
         currentTime = System.currentTimeMillis() - startTime;
+
 
     }
 
@@ -235,22 +235,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         dartTowerSelector = new Sprite("../resources/Dart_Monkey.png", 1200, 100);
         tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 200);
         superMonkeySelector = new Sprite("../resources/Super_Monkey.png", 1200, 300);
-        // sprite instantiation
-        b = new Balloon(3);
-        b.addMouseListener(this);
-
-//        for (int i = 0; i < numBalloons; i++) { // fills bs with random balloons
-//            int r = (int) (Math.random() * 3) + 1;
-//            //System.out.println(r);
-//            bs.add(new Balloon(r, -75 * i, 405));
-//            bs.get(i).addMouseListener(this);
-//        }
+ 
         newLevel(level);
-
-        // particles
-        // particles.add(new Particle(50, 50));
-        balloons.add(b);
-
         f.add(this);
 
         // drawing timer
@@ -261,22 +247,45 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         start = System.currentTimeMillis();
     }
 
-    public void newLevel(int l) {
-        for (int i = 0; i < numBalloons; i++) {
-            double r = Math.random();
-            if (r < rarity[0]) {
-                bs.add(new Balloon(1, -75 * i, 405));
-            } else if (r < rarity[0] + rarity[1]) {
-                bs.add(new Balloon(2, -75 * i, 405));
-            } else if (r < rarity[0] + rarity[1] + rarity[2]) {
-                bs.add(new Balloon(3, -75 * i, 405));
-            }
-        }
+    
+    // once a blimp balloon pops, it spawns in several new ones
+    public void newBalloon(Blimp b) { 
+    	System.out.println("spawned new");
+    	for(int i = 0; i < b.getTier() * 2; i++) {
+    		bs.add(new Balloon(3, b.getx(), b.gety()));
+    	}
+    }
+    
+    // a wait method in milliseconds
+    public void delay(int mill) {
+    	double now = System.currentTimeMillis();
+		while(System.currentTimeMillis() - now < mill) {
+			
+		}
+    }
+    
+    //creates "waves of balloons"
+    public void newLevel(int l){
+    	for(int i = 0; i< numBalloons; i++) {
+    		double r = Math.random(); //generates random number
+    		double percent = 0;
+    		for(int j = 0; j < rarity.length; j++) { // finds which percentile the number lands in
+    			percent += rarity[j];
+    			if(r < percent && j < 3) { // if it is a balloon
+    				bs.add(new Balloon(j+1, -75 * i, 405)); //chooses balloon based on that percentile range
+        			j += rarity.length;
+    			}
+    			else if(r < percent) { // if it is a blimp
+    				bs.add(new Blimp(j-2, -75 * i, 405));
+    			}
+    		}
+    	}
+    	
+//    	numBalloons += 5; // updates number of balloons
+//    	rarity[0] -= 0.075; // updates probability
+//    	rarity[1] += 0.05;
+//    	rarity[2] += 0.025;
 
-        numBalloons += 5;
-        rarity[0] -= 0.075;
-        rarity[1] += 0.05;
-        rarity[2] += 0.025;
     }
 
     private void placeTower() {
@@ -365,10 +374,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             // b.moveTo(0,0);
             if (bs.size() != 0) {
                 bs.get(0).takeDamage(1);
-                if (!bs.get(0).isAlive()) {
-                    bs.remove(0);
-
-                }
             }
         }
     }
@@ -385,15 +390,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
         // System.out.println("key press "+e.getKeyCode());
         if (e.getKeyCode() == 38) {
-            // up
-
-            // System.out.println("key press "+e.getKeyCode());
-            if (e.getKeyCode() == 38) {
-                // up
-                b.deletePath();
-
-            }
-
         }
     }
 
@@ -402,7 +398,19 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // System.out.println(e.getX() + " " + e.getY());
         pressed = false;
         e.getComponent();// System.out.println("clicked on a sprite");
-
+        BufferedImage img = null;
+        File f = new File("../resources/hqdefault.jpg");
+        try {
+			img = ImageIO.read(f);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        
+        int p = img.getRGB(e.getX(), e.getY());
+        int r = (p>>16) & 0xff;
+        int g = (p>>8) & 0xff;
+        int b = p & 0xff;
+        System.out.println("red: " + r + " greeen: " + g + " blue: " + b);
     }
 
     @Override
