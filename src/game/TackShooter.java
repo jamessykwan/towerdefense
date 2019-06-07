@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import game.GameEffects.Dart;
@@ -10,6 +12,13 @@ public class TackShooter extends Tower {
         super(x, y, "../resources/Tack_Shooter.png");
         setAttackRadius(300);
     }
+    
+    public void paint(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.drawImage(getTower().img, (int) getX(), (int) getY(), 100, 100, null);
+        g2.dispose();
+    }
+
 
     public void findTarget(ArrayList<Balloon> sprites) {
         if (getTarget() != null) {

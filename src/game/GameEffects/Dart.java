@@ -14,7 +14,7 @@ import game.Sprite;
 public class Dart extends GameEffect {
 
     public Dart(Coordinate pos, Coordinate targetPos) {
-        setEffect(new Sprite("../resources/dart.png", pos.getX(), pos.getY()));
+        setEffect(new Sprite("../resources/dart1.png", pos.getX(), pos.getY()));
         setX(pos.getX());
         setY(pos.getY());
         setVelX((targetPos.getX() - pos.getX()));
@@ -31,7 +31,7 @@ public class Dart extends GameEffect {
         Graphics2D g3 = resizedImg.createGraphics();
 
         g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g3.drawImage(getEffect().img, 0, 0, 30, 10, null);
+        g3.drawImage(getEffect().img, 0, 0, 10, 10, null);
         g3.dispose();
 
         // example rotating image on call to paint

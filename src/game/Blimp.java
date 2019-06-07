@@ -13,7 +13,7 @@ public class Blimp extends Balloon{
             setSpeed(5);
         }
         else {
-        	setHealth(1);
+        	setHealth(20);
         	setDamage(20);
             setSpeed(1);
         }
