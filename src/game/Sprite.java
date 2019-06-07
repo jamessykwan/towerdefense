@@ -6,31 +6,31 @@ import java.awt.geom.AffineTransform;
 import java.net.URL;
 
 public class Sprite extends JButton {
-    double x;
-    double y;
+    private double x;
+    private double y;
     //JLabel img;
-    Image img;
+    public Image img;
     private int vx = 0, vy = 0, ay = 1;
 
-    AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
+    public AffineTransform tx = AffineTransform.getTranslateInstance(getX(), getY());
 
     // constructs player as affinetransform instead of image
     public Sprite(String filename) {
-        tx = AffineTransform.getTranslateInstance(x, y);
-        x = 0;
-        y = 405;
+        tx = AffineTransform.getTranslateInstance(getX(), getY());
+        setX(0);
+        setY(405);
         img = getImage(filename);
 
-        this.setBounds((int) x, (int) y, 100, 100);
-        init(x, y);
+        this.setBounds((int) getX(), (int) getY(), 100, 100);
+        init(getX(), getY());
     }
 
 
     public Sprite(String f, int x2, int y2) {
-        x = x2;
-        y = y2;
+        setX(x2);
+        setY(y2);
         img = getImage(f);
-        init(x, y);
+        init(getX(), getY());
     }
 
 
@@ -53,10 +53,17 @@ public class Sprite extends JButton {
         return (int) tx.getTranslateY();
     }
 
+    public void sety(int a) {
+        y = a;
+    }
+
     public int getx() {
         return (int) tx.getTranslateX();
     }
 
+    public void setx(int a) {
+        x = a;
+    }
 
     public void rotateCW() {
         tx.rotate(2);
@@ -72,7 +79,7 @@ public class Sprite extends JButton {
     // draw the affinetransform
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
-        g2.drawImage(img, (int) x, (int) y, 100, 100, null);
+        g2.drawImage(img, (int) getX(), (int) getY(), 100, 100, null);
         g2.dispose();
     }
 
@@ -88,9 +95,28 @@ public class Sprite extends JButton {
         return tempImage;
     }
 
-
 	public void takeDamage(int i) {
 		// TODO Auto-generated method stub
 		//does nothing
 	}
+
+    public int getX() {
+        return (int) x;
+    }
+
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+
+    public int getY() {
+        return (int) y;
+    }
+
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
 }

@@ -11,16 +11,15 @@ import game.Coordinate;
 import game.GameEffect;
 import game.Sprite;
 
-public class Dart extends GameEffect {
+public class Tack extends GameEffect {
 
-    public Dart(Coordinate pos, Coordinate targetPos) {
-        setEffect(new Sprite("../resources/dart.png", pos.getX(), pos.getY()));
+    public Tack(Coordinate pos, Coordinate targetPos) {
+        setEffect(new Sprite("../resources/tack.png", pos.getX(), pos.getY()));
         setX(pos.getX());
         setY(pos.getY());
         setVelX((targetPos.getX() - pos.getX()));
         setVelY((targetPos.getY() - pos.getY()));
         setAge(0);
-        currentAngle = 0;
     }
 
     public void paint(Graphics g) {
@@ -31,7 +30,7 @@ public class Dart extends GameEffect {
         Graphics2D g3 = resizedImg.createGraphics();
 
         g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g3.drawImage(getEffect().img, 0, 0, 30, 10, null);
+        g3.drawImage(getEffect().img, 0, 0, 50, 30, null);
         g3.dispose();
 
         // example rotating image on call to paint
@@ -41,22 +40,22 @@ public class Dart extends GameEffect {
     }
 
     public void move(ArrayList<Balloon> enemies) {
-        setAge(getAge() + .09);
-        effect.tx.translate(getVelX() / 25, getVelY() / 25);
+        age += .09;
+        effect.tx.translate(velX / 50, velY / 50);
         effect.setX(effect.tx.getTranslateX());
         effect.setY(effect.tx.getTranslateY());
         // System.out.println("x: " + effect.x + " y: " + effect.y + " velX: " + velX +
         // " velY: " + velY);
         for (Balloon enemy : enemies) {
-            double distanceX = enemy.getX() + 10 - x;
-            double distanceY = enemy.getY() + 10 - y;
+            double distanceX = enemy.getX() + 10 - this.getEffect().tx.getTranslateX();
+            double distanceY = enemy.getY() + 10 - this.getEffect().tx.getTranslateY();
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-            // System.out.println(distance);
+            //System.out.println(distance);
             if (Double.compare(distance, 40) < 0) {
-                //enemy.takeDamage(1);
+                enemy.takeDamage(1);
+                //System.out.println("shot");
                 isDone = true;
             }
         }
     }
-
 }

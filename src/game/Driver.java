@@ -12,25 +12,30 @@ import java.util.Iterator;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-    int numBalloons = 1;
+    int towerType = 0;
+    int numBalloons = 10;
     int screen_width = 1500;
     int screen_height = 1000;
+    String selected = "";
+    Balloon b;
+
     ArrayList<Balloon> bs = new ArrayList<Balloon>();
     ArrayList<Blimp> bigBS = new ArrayList<Blimp>();
     double[] rarity = {0, 0, 0, 0, 1};
     double start;
     Background bg;
     int level = 1;
+    Sprite cursorTracker = new Sprite("../resources/Dart_Monkey.png", 1500, 100);
 
-    int pHealth = 100; //example
+    int pHealth = 100; // example
+    int WaveNumber = 1;
+    int Money = 5000; // example
 
-    int my_variable = 0; // example
-
-    
     private Sprite dartTowerSelector;
-
-    private ArrayList<Particle> particles = new ArrayList<>();
-    private static ArrayList<DartTower> towers = new ArrayList<>();
+    private Sprite tackShooterSelector;
+    private Sprite superMonkeySelector;
+    // private ArrayList<Particle> particles = new ArrayList<>();
+    private static ArrayList<Tower> towers = new ArrayList<>();
     private static ArrayList<Sprite> balloons = new ArrayList<>();
     private static ArrayList<Balloon> attackedBalloons = new ArrayList<>();
     public static ArrayList<GameEffect> gameEffects = new ArrayList<>();
@@ -41,6 +46,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     private int mouseY;
     Tower tempTower;
     private double startTime;
+    private double currentTime;
 
     // fonts
     private Font font = new Font("Courier New", Font.BOLD, 50);
@@ -50,10 +56,17 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         super.paintComponent(g);
         bg.paint(g);
         dartTowerSelector.paint(g);
+        tackShooterSelector.paint(g);
+        superMonkeySelector.paint(g);
+        cursorTracker.paint(g);
         g.setFont(font);
 
         g.setColor(Color.RED);
         g.drawString(("Health:") + pHealth, 1100, 870);
+        g.drawString("Money:" + Money, 1100, 910);
+        g.drawString("Wave: " + WaveNumber, 1100, 50);
+        g.drawString(selected, 1000, 950);
+        // g.drawString("Dart Tower"), arg1, arg2);
         g.setFont(font2);
         g.setColor(Color.CYAN);
 
@@ -69,13 +82,18 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         g.setColor(Color.BLACK);
 
         for (Sprite b : bs) {
-            g.drawOval((int) b.x, (int) b.y, 30, 30);
+            g.drawOval((int) b.getX(), (int) b.getY(), 30, 30);
         }
         for (Tower t : towers) {
             t.paint(g);
             g.drawOval(t.getX(), t.getY(), 30, 30);
             // for debugging
-            g.drawOval(t.getX() - 120, t.getY() + -100, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+            if (t.getCost() == 100 || t.getCost() == 500) {
+                g.drawOval(t.getX() - 120, t.getY() + -100, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+            }
+            if (t.getCost() == 2000) {
+                g.drawOval(t.getX() - 350, t.getY() + -350, (int) t.getAttackRadius(), (int) t.getAttackRadius());
+            }
         }
         for (GameEffect gameEffect : gameEffects) {
             gameEffect.paint(g);
@@ -84,7 +102,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     }
 
     private void update() {
-        double currentTime = System.currentTimeMillis() - startTime;
         /*
          * if (!attackedBalloons.isEmpty()) { for(int i = 0; i< attackedBalloons.size();
          * i++) { attackedBalloons.get(i).takeDamage(1);
@@ -93,28 +110,54 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
          * attackedBalloons.remove(attackedBalloons.get(i)); } } }
          *
          */
-        placeTower();
-        if (currentTime % 10 == 0) {
-            for (Tower t : towers) {
 
-                t.findTarget(bs);
-                // attackedBalloons.add((Balloon) target);
-
-            }
+        if (placingTower) {
+            cursorTracker.setx(mouseX - 20);
+            cursorTracker.sety(mouseY - 75);
+        } else {
+            cursorTracker.setx(5000);
         }
+        placeTower();
+        // if (currentTime % 10 == 0) {
+        for (Tower t : towers) {
+            if (t.getCost() >= 2000 && t.getCooldown() <= 0) {
+                t.setCooldown(10);
+                t.findTarget(bs);
+                t.update(t.getTarget());
+
+            } else if (t.getCooldown() <= 0) {
+                t.findTarget(bs);
+                t.update(t.getTarget());
+                t.setCooldown(30);
+            } else {
+                t.setCooldown(t.getCooldown() - (System.currentTimeMillis() - currentTime) / 10);
+            }
+            // attackedBalloons.add((Balloon) target);
+        }
+        // }
         Iterator<GameEffect> iter = gameEffects.iterator();
         while (iter.hasNext()) {
             GameEffect effect = iter.next();
-            effect.move();
+            effect.move(bs);
             if (effect.isDone()) {
                 iter.remove();
-                //System.out.println("removed");
+                // System.out.println("removed");
             }
         }
-       /* for (GameEffect gameEffect : gameEffects) {
-            gameEffect.move();
 
+        /*placeTower();
+        // if (currentTime % 10 == 0) {
+        for (Tower t : towers) {
+            if (t.getCooldown() <= 0) {
+                t.findTarget(bs);
+                t.update();
+                t.setCooldown(50);
+            } else {
+                t.setCooldown((int) t.getCooldown());
+            }
+            // attackedBalloons.add((Balloon) target);
         }
+
         */
        
         for (int i = 0; i < bs.size(); i++) {
@@ -124,14 +167,17 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             	if (!b.isAlive()) {
                 	bs.remove(b);
                     attackedBalloons.remove(b);
+                  Money+=2;
                 }
             } else {
             	b = (Blimp) bs.get(i);
         		if (!b.isAlive()) {
                 	newBalloon((Blimp) b);
                 	bs.remove(b);
-                    attackedBalloons.remove(b);
+                  attackedBalloons.remove(b);
+                  Money += 50;
                 }
+
             }
             b.move();
             
@@ -144,10 +190,23 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
             }
         }
 
-        if(bs.size()==0) {
-        	level++;
-        	newLevel(level);
+        if (bs.size() == 0) {
+            level++;
+            newLevel(level);
+            Money += 200 - pHealth;
+            WaveNumber += 1;
         }
+
+
+//        if(System.currentTimeMillis() - start > 1000) {
+//            int r = (int) (Math.random() * 3) + 1;
+//        	bs.add(new Balloon(r, 0, 405));
+//        	start = System.currentTimeMillis();
+//        }
+        // System.out.println("move");
+        currentTime = System.currentTimeMillis() - startTime;
+
+
     }
 
     @Override
@@ -173,24 +232,21 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         f.addMouseListener(this);
         placingTower = false;
         bg = new Background("../resources/hqdefault.jpg", 0, 0);
-        dartTowerSelector = new Sprite("../resources/weirdPixelMonkey.png", 1200, 100);
-
-        // sprite instantiation
+        dartTowerSelector = new Sprite("../resources/Dart_Monkey.png", 1200, 100);
+        tackShooterSelector = new Sprite("../resources/Tack_Shooter.png", 1200, 200);
+        superMonkeySelector = new Sprite("../resources/Super_Monkey.png", 1200, 300);
+ 
         newLevel(level);
-        
-        // particles
-        particles.add(new Particle(50, 50));
-
         f.add(this);
 
         // drawing timer
-        Timer t = new Timer(17, this);
+        Timer t = new Timer(5, this);
         t.start();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
         start = System.currentTimeMillis();
     }
-    
+
     
     // once a blimp balloon pops, it spawns in several new ones
     public void newBalloon(Blimp b) { 
@@ -229,33 +285,95 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 //    	rarity[0] -= 0.075; // updates probability
 //    	rarity[1] += 0.05;
 //    	rarity[2] += 0.025;
+
     }
 
     private void placeTower() {
-        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 213) {
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 125 && mouseY < 225) {
             placingTower = true;
-            // System.out.println(placingTower);
+            towerType = 1;
+            selected = "Dart Monkey 100";
+            cursorTracker = new Sprite("../resources/Dart_Monkey.png", mouseX - 20, mouseY - 75);
+            //System.out.println(selected);
         }
-        if (pressed && placingTower && mouseX < 1100) {
-            DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
-            towers.add(tower);
-            placingTower = false;
+		/*else if(!isValid(100, Money)) {
+		selected="Not Enough Money";
+		}*/
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 225 && mouseY < 325) {
+            placingTower = true;
+            towerType = 2;
+            // System.out.println(placingTower);
+            selected = "Tack Shooter 500";
+            cursorTracker = new Sprite("../resources/Tack_Shooter.png", mouseX - 20, mouseY - 75);
+        }
+        if (pressed && mouseX > 1195 && mouseX < 1300 && mouseY > 325 && mouseY < 425) {
+            placingTower = true;
+            towerType = 3;
+            // System.out.println(placingTower);
+            selected = "Super Monkey 2000";
+            cursorTracker = new Sprite("../resources/Super_Monkey.png", mouseX - 20, mouseY - 75);
+        }
+		/*else if(!isValid(500, Money)) {
+		selected="Not Enough Money";
+		}*/
+		/*if(pressed&&placingTower&&mouseX>1200) {
+		placingTower=false;
+		towerType=0;
+		selected="";
+		}*/
+        if (pressed && placingTower && mouseX < 1100 && towerType == 1) {
+            if (isValid(100, Money)) {
+                DartTower tower = new DartTower(mouseX - 20, mouseY - 75);
+                towers.add(tower);
+                placingTower = false;
+                towerType = 0;
+                Money -= 100;
+                selected = "";
+            } else {
+                placingTower = false;
+                towerType = 0;
+                selected = "Not Enough Money";
+            }
+        }
+        if (pressed && placingTower && mouseX < 1100 && towerType == 2) {
+            if (isValid(500, Money)) {
+                TackShooter tower = new TackShooter(mouseX - 20, mouseY - 75);
+                towers.add(tower);
+                placingTower = false;
+                towerType = 0;
+                Money -= 500;
+                selected = "";
+            } else {
+                placingTower = false;
+                towerType = 0;
+                selected = "Not Enough Money";
+            }
+        }
+        if (pressed && placingTower && mouseX < 1100 && towerType == 3) {
+            if (isValid(2000, Money)) {
+                SuperMonkey tower = new SuperMonkey(mouseX - 20, mouseY - 75);
+                towers.add(tower);
+                placingTower = false;
+                towerType = 0;
+                Money -= 2000;
+                selected = "";
+            } else {
+                placingTower = false;
+                towerType = 0;
+                selected = "Not Enough Money";
+            }
         }
     }
-
 
     @Override
     public void keyPressed(KeyEvent e) {
 
         // System.out.println("key press " + e.getKeyCode());
         if (e.getKeyCode() == 38) {
-            //up
-            //b.moveTo(0,0);
+            // up
+            // b.moveTo(0,0);
             if (bs.size() != 0) {
                 bs.get(0).takeDamage(1);
-//                if (!bs.get(0).isAlive()) {
-//                    bs.remove(0);
-//                }
             }
         }
     }
@@ -270,9 +388,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     public void keyTyped(KeyEvent e) {
         // TODO Auto-generated method stub
 
-        //System.out.println("key press "+e.getKeyCode());
+        // System.out.println("key press "+e.getKeyCode());
         if (e.getKeyCode() == 38) {
-            //up
         }
     }
 
@@ -340,5 +457,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
     }
 
+    public boolean isValid(int price, int money) {
+        if (price > money)
+            return false;
+        return true;
+    }
 
 }

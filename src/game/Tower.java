@@ -3,6 +3,8 @@ package game;
 import game.GameEffects.Dart;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 abstract class Tower {
@@ -17,19 +19,72 @@ abstract class Tower {
     private double attackRadius;
     private int x;
     private int y;
+    private int r;
     private Balloon target;
     private boolean withinRange;
+    private double cooldown;
+    double targetAngle = 0;
+    double currentAngle = 0;
 
     public Tower(int x, int y) {
         this.setX(x);
         this.setY(y);
-        setTower(new Sprite("../resources/weirdPixelMonkey.png", x, y));
+        r = 0;
+        setTower(new Sprite("../resources/Dart_Monkey.png", x, y));
+    }
+
+    public Tower(int x, int y, String type) {
+        this.setX(x);
+        this.setY(y);
+        setTower(new Sprite(type, x, y));
+    }
+
+    public double getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(double d) {
+        cooldown = d;
     }
 
     public void paint(Graphics g) {
-        // g.drawImage(tower.img, (int) position.getX() + anchorX, (int) position.getY()
-        // + anchorY, null);
-        getTower().paint(g);
+        /*
+
+        // example resizing image on call to paint
+        //BufferedImage resizedImg = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+        //Graphics2D g3 = resizedImg.createGraphics();
+
+        //g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        //g3.drawImage(getTower().img, 0, 0, 100, 100, null);
+        //g3.dispose();
+
+        // example rotating image on call to paint
+        //getEffect().tx.rotate(1, 50, 50);
+        AffineTransform backup = g2.getTransform();
+        AffineTransform trans = new AffineTransform();
+        //trans.rotate(Math.toRadians(currentAngle), getTower().getX()+20, getTower().getY()+20);
+        g2.transform(trans);
+        //getTower().tx.setToRotation(Math.toRadians(currentAngle));
+        System.out.println(currentAngle);
+        // g2.drawImage(getTower().img, getTower().getx(), getTower().gety());
+
+        g2.drawImage(getTower().img, getTower().getx(), getTower().gety(), null);
+        g2.setTransform(backup);
+        g2.dispose();
+        */
+        Graphics2D g2 = (Graphics2D) g.create();
+        BufferedImage resizedImg = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g3 = resizedImg.createGraphics();
+
+        g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g3.drawImage(getTower().img, 0, 0, 200, 200, null);
+        g3.dispose();
+        AffineTransform tx = new AffineTransform();
+        tx.rotate(Math.toRadians(targetAngle + 90), getTower().getX() + 18, getTower().getY() + 24);
+        tx.translate(getX() - 20, getY() - 10);
+        tx.scale(1.4, 1.4);
+        g2.drawImage(getTower().img, tx, null);
+
     }
 
 
@@ -37,8 +92,8 @@ abstract class Tower {
         position = p;
     }
 
-    public void setTarget(Balloon target) {
-        this.target = target;
+    public void setTarget(Balloon closestTarget) {
+        this.target = closestTarget;
     }
 
     public boolean hitsTarget() {
@@ -49,15 +104,29 @@ abstract class Tower {
         return true;
     }
 
+    public void update(Sprite target) {
+        if (target != null) {
+            double distanceX = target.getX() + 10 - this.getX();
+            double distanceY = target.getY() + 10 - this.getY();
+            // angle that the tower needs to be rotated to face the target
+            targetAngle = Math.toDegrees(Math.atan2(distanceY, distanceX));
+            getTower().repaint();
+        }
+
+    }
+
+    //find a target that is within the attack range
     public void findTarget(ArrayList<Balloon> sprites) {
-        if (getTarget() != null) {
+        /*if (getTarget() != null) {
             return;
         }
+
+         */
         double closestDist = 0.0;
         Balloon closestTarget = null;
         for (Balloon t : sprites) {
-            double distanceX = t.x + 10 - this.getX();
-            double distanceY = t.y + 10 - this.getY();
+            double distanceX = t.getX() + 10 - this.getX();
+            double distanceY = t.getY() + 10 - this.getY();
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
             //System.out.println(distance);
             if (Double.compare(distance, getAttackRadius()) > 0) {
@@ -72,11 +141,12 @@ abstract class Tower {
             }
         }
         setTarget(closestTarget);
+        this.update(closestTarget);
         if (closestTarget != null) {
-            Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.x, (int) closestTarget.y));
+            Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.getX(), (int) closestTarget.getY()));
             Driver.gameEffects.add(dart);
             closestTarget.takeDamage(1);
-            setTarget(null);
+            //setTarget(null);
         }
     }
 
