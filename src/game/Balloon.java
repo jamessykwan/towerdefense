@@ -9,6 +9,7 @@ public class Balloon extends Sprite {
     private int speed;
     private int tier;
     private boolean isAlive;
+    private boolean isBlimp = false;
     private ArrayList<Coordinate> path = new ArrayList<>();
 
     public Balloon(String filename) {
@@ -84,7 +85,7 @@ public class Balloon extends Sprite {
             setTier(getTier() - 1);
             setHealth(1);
             setDamage(getTier());
-            setSpeed(2 * getTier());
+            setSpeed((int) (1.2 * getTier()));
             img = getImage(updateImage(getTier())); // converted getImage to protected b/c it wasn't accessible by Balloon class (child class)
         } else {
             setAlive(false);
@@ -110,7 +111,7 @@ public class Balloon extends Sprite {
     }
 
     public boolean isFinished() {
-        return (getPath().size() == 0);
+        return (getPath().size() == 0 || tx.getTranslateY() < -75);
     }
 
 
@@ -155,7 +156,7 @@ public class Balloon extends Sprite {
 
         }
     }
-
+    
     public int getHealth() {
         return health;
     }
@@ -202,5 +203,13 @@ public class Balloon extends Sprite {
 
     public void setPath(ArrayList<Coordinate> path) {
         this.path = path;
+    }
+    
+    public boolean isBlimp() {
+		return isBlimp;
+    }
+    
+    public void setBlimp(boolean b) {
+    	isBlimp = b;
     }
 }

@@ -39,7 +39,15 @@ public class Sprite extends JButton {
         tx.translate(vx, vy);
         //System.out.println(vx + " " + vy);
     }
+    
+    public void moveTo(int x1, int y1) {
+    	tx.translate(x1, y1);
+    }
 
+    public void setImg(String filename) {
+    	img = getImage(filename);
+    }
+    
     // use find affinetransform current position
     public int gety() {
         return (int) tx.getTranslateY();
@@ -79,4 +87,10 @@ public class Sprite extends JButton {
         }
         return tempImage;
     }
+
+
+	public void takeDamage(int i) {
+		// TODO Auto-generated method stub
+		//does nothing
+	}
 }
