@@ -17,7 +17,7 @@ public class Sprite extends JButton {
     // constructs player as affinetransform instead of image
     public Sprite(String filename) {
         tx = AffineTransform.getTranslateInstance(getX(), getY());
-        setX(0);
+        setX(0); // beginning of path
         setY(405);
         img = getImage(filename);
 
@@ -37,7 +37,6 @@ public class Sprite extends JButton {
     // move with input from driver
     public void move() {
         tx.translate(vx, vy);
-        //System.out.println(vx + " " + vy);
     }
     
     public void moveTo(int x1, int y1) {

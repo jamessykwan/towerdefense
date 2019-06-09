@@ -13,14 +13,13 @@ public class Blimp extends Balloon{
             setSpeed(5);
         }
         else {
-        	setHealth(1);
+        	setHealth(20);
         	setDamage(20);
             setSpeed(1);
         }
         setImg(updateImage(tier));
         setAlive(true);
         createPath();
-        setBlimp(true);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -38,12 +37,7 @@ public class Blimp extends Balloon{
 			return "../resources/whiteBalloon.png";
 		}
 		else{
-			return "../resources/airBalloon.png";
+			return "../resources/blimp.png";
 		}
-	}
-	
-	public boolean isBlimp() {
-		return true;
-	}
-	
+	}	
 }
