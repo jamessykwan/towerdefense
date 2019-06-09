@@ -45,15 +45,11 @@ public class Dart extends GameEffect {
         effect.tx.translate(getVelX() / 25, getVelY() / 25);
         effect.setX(effect.tx.getTranslateX());
         effect.setY(effect.tx.getTranslateY());
-        // System.out.println("x: " + effect.x + " y: " + effect.y + " velX: " + velX +
-        // " velY: " + velY);
         for (Balloon enemy : enemies) {
             double distanceX = enemy.getX() + 10 - x;
             double distanceY = enemy.getY() + 10 - y;
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-            // System.out.println(distance);
             if (Double.compare(distance, 40) < 0) {
-                //enemy.takeDamage(1);
                 isDone = true;
             }
         }

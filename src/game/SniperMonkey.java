@@ -28,18 +28,12 @@ public class SniperMonkey extends Tower{
         }
     }
     public void findTarget(ArrayList<Balloon> sprites) {
-        /*if (getTarget() != null) {
-            return;
-        }
-
-         */
         double closestDist = 0.0;
         Balloon closestTarget = null;
         for (Balloon t : sprites) {
             double distanceX = t.getX() + 10 - this.getX();
             double distanceY = t.getY() + 10 - this.getY();
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
-            //System.out.println(distance);
             if (Double.compare(distance, getAttackRadius()) > 0) {
                 continue;
             }
@@ -54,10 +48,7 @@ public class SniperMonkey extends Tower{
         setTarget(closestTarget);
         this.update(closestTarget);
         if (closestTarget != null) {
-            //Dart dart = new Dart(new Coordinate(getX(), getY()), new Coordinate((int) closestTarget.getX(), (int) closestTarget.getY()));
-            //Driver.gameEffects.add(dart);
             closestTarget.takeDamage(10);
-            //setTarget(null);
         }
     }
 }

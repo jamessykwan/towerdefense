@@ -30,7 +30,6 @@ public class TackShooter extends Tower {
             double distanceX = t.getX() + 10 - this.getX();
             double distanceY = t.getY() + 10 - this.getY();
             double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2)) + 110;
-            //System.out.println(distance);
             if (Double.compare(distance, getAttackRadius()) > 0) {
                 continue;
             }
@@ -45,9 +44,8 @@ public class TackShooter extends Tower {
         setTarget(closestTarget);
         if (closestTarget != null) {
             for (int i = 0; i < 8; i++) {
-                Tack tack = new Tack(new Coordinate(getX(), getY()), new Coordinate((int) (getX() + getAttackRadius() * Math.cos(.785 * i)), (int) (getY() + getAttackRadius() * Math.sin(.785 * i))));
+                Tack tack = new Tack(new Coordinate(getX() + 50, getY() + 50), new Coordinate((int) (getX() + getAttackRadius() * Math.cos(.785 * i)), (int) (getY() + getAttackRadius() * Math.sin(.785 * i))));
                 Driver.gameEffects.add(tack);
-                //closestTarget.takeDamage(1);
                 setTarget(null);
             }
         }

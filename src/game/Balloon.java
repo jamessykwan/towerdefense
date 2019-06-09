@@ -9,7 +9,6 @@ public class Balloon extends Sprite {
     private int speed;
     private int tier;
     private boolean isAlive;
-    private boolean isBlimp = false;
     private ArrayList<Coordinate> path = new ArrayList<>();
 
     public Balloon(String filename) {
@@ -18,7 +17,10 @@ public class Balloon extends Sprite {
         setDamage(1);
         setAlive(true);
     }
-
+    
+    /*
+     * Tier based system for balloons
+     */
     public Balloon(int tier) {
 
         super(updateImage(tier));
@@ -41,7 +43,9 @@ public class Balloon extends Sprite {
         createPath();
     }
 
-
+    /*
+     * creates the path for the balloons to take
+     */
     public void createPath() {
         getPath().add(new Coordinate(156, 405));
         getPath().add(new Coordinate(156, 140));
@@ -59,7 +63,7 @@ public class Balloon extends Sprite {
         getPath().add(new Coordinate(517, -100));
     }
 
-
+    
     public void deletePath() {
         getPath().clear();
     }
@@ -102,14 +106,16 @@ public class Balloon extends Sprite {
             return "../resources/blueBalloon.png";
         } else if (tier == 1) {
             return "../resources/redBalloon.png";
-        } else if (tier == 4){
-        	return "../resources/whiteBalloon.png";
         } else {
             return null;
         }
 
     }
 
+    
+    /*
+     * Checks if balloon reaches end
+     */
     public boolean isFinished() {
         return (getPath().size() == 0 || tx.getTranslateY() < -75);
     }
@@ -126,32 +132,24 @@ public class Balloon extends Sprite {
             int x1 = c.x;
             int y1 = c.y;
 
-            if (Math.abs(x1 - getX()) > getSpeed() || Math.abs(y1 - getY()) > getSpeed()) {
+            if (Math.abs(x1 - getX()) > getSpeed() || Math.abs(y1 - getY()) > getSpeed()) { //checks if the balloon is within a certain range away from target
 
                 if (this.getX() > x1 && Math.abs(x1 - getX()) > getSpeed()) {
                     tx.translate(-getSpeed(), 0);
                     setX((int) tx.getTranslateX());
                 } else if (this.getX() < x1 && Math.abs(x1 - getX()) > getSpeed()) {
-                    //this.x += speed;
                     tx.translate(getSpeed(), 0);
                     setX((int) tx.getTranslateX());
-
-
                 } else if (this.getY() > y1 && Math.abs(y1 - getY()) > getSpeed()) {
-                    //vx = 0;
                     tx.translate(0, -getSpeed());
                     setY((int) tx.getTranslateY());
                 } else if (this.getY() < y1 && Math.abs(y1 - getY()) > getSpeed()) {
-                    //vx = 0;
                     tx.translate(0, getSpeed());
                     setY((int) tx.getTranslateY());
-
-
                 }
 
             } else {
                 getPath().remove(0);
-                //System.out.println("reached point");
             }
 
         }
@@ -203,13 +201,5 @@ public class Balloon extends Sprite {
 
     public void setPath(ArrayList<Coordinate> path) {
         this.path = path;
-    }
-    
-    public boolean isBlimp() {
-		return isBlimp;
-    }
-    
-    public void setBlimp(boolean b) {
-    	isBlimp = b;
     }
 }

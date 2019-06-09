@@ -20,7 +20,6 @@ public class Blimp extends Balloon{
         setImg(updateImage(tier));
         setAlive(true);
         createPath();
-        setBlimp(true);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -40,10 +39,5 @@ public class Blimp extends Balloon{
 		else{
 			return "../resources/blimp.png";
 		}
-	}
-	
-	public boolean isBlimp() {
-		return true;
-	}
-	
+	}	
 }
