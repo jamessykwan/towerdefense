@@ -38,7 +38,7 @@ public class Blimp extends Balloon{
 			return "../resources/whiteBalloon.png";
 		}
 		else{
-			return "../resources/blimp.png";
+			return "../resources/airBalloon.png";
 		}
 	}
 	

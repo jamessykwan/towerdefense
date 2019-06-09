@@ -13,7 +13,7 @@ import java.util.Iterator;
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
     int towerType = 0;
-    int numBalloons = 10;
+    int numBalloons = 4;
     int screen_width = 1500;
     int screen_height = 1000;
     String selected = "";
@@ -253,6 +253,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     	System.out.println("spawned new");
     	for(int i = 0; i < b.getTier() * 2; i++) {
     		bs.add(new Balloon(3, b.getx(), b.gety()));
+    		bs.get(bs.size()-1).setSpeed(0);
+    		ArrayList<Coordinate> newPath = new ArrayList<Coordinate>();
+    		for(Coordinate c: b.getPath()) {
+    			newPath.add(c);
+    		}
+    		bs.get(bs.size()-1).setPath(newPath);
+    		bs.get(bs.size()-1).setSpeed( (int)(1.2 * bs.get(bs.size()-1).getTier()));
     	}
     }
     
